@@ -10,53 +10,53 @@ trait Predicate1[A] extends Function[A,Boolean] {
   def nand(that: Predicate1[A]) = Nand1(this, that)
   def nor(that: Predicate1[A]) = Nor1(this, that)
 
-  def apply(x: A):Boolean
+  def apply(arg0: A):Boolean
 }
 
-//trait CompoundPredicate1[A]{
-//  val pred1: Predicate1[A]
-//  val pred2: Predicate1[A]
-//}
-//
+trait CompoundPredicate1[A] extends Predicate1[A]{
+  val pred1: Predicate1[A]
+  val pred2: Predicate1[A]
+}
+
 //object CompoundPredicate1{
 //  def unapply
 
-case class Or1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = pred1(x) || pred2(x)
+case class Or1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = pred1(arg0) || pred2(arg0)
 }
 
-case class OrNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = pred1(x) || !pred2(x)
+case class OrNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = pred1(arg0) || !pred2(arg0)
 }
 
-case class And1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = pred1(x) && pred2(x)
+case class And1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = pred1(arg0) && pred2(arg0)
 }
 
-case class AndNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = pred1(x) && !pred2(x)
+case class AndNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = pred1(arg0) && !pred2(arg0)
 }
 
-case class Xor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = if(pred1(x)) !pred2(x) else pred2(x)
+case class Xor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = if(pred1(arg0)) !pred1(arg0) else pred1(arg0)
 }
 
-case class Nand1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = !(pred1(x) && pred2(x)) //TODO: this right?  Have I mixed up nand and nor?
+case class Nand1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = !(pred1(arg0) && pred1(arg0))
 }
 
-case class Nor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = !(pred1(x) || pred2(x)) //TODO: this right?
+case class Nor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = !(pred1(arg0) || pred1(arg0))
 }
 
 case class Not1[A](pred: Predicate1[A]) extends Predicate1[A]{
-  def apply(x: A) = !pred(x)
+  def apply(arg0: A) = !pred(arg0)
 }
 
 case object Always1 extends Predicate1[Any]{
-  def apply(x: Any) = true
+  def apply(arg0: Any) = true
 }
 
 case object Never1 extends Predicate1[Any]{
-  def apply(x: Any) = false
+  def apply(arg0: Any) = false
 }

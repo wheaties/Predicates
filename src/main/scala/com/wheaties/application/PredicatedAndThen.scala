@@ -3,12 +3,13 @@ package com.wheaties.application
 import com.wheaties.predicate.Predicate1
 import com.wheaties.predicate.Predicate._
 
-trait PredicatedAndThen[A,B,C] extends Function1[A,C]{
+//TODO: make the func wrapped itself a function factory
+//TODO: also make the AndThenElse a function factory
+//TODO: add an apply to the open and closed AndThenElif, define the func1 in terms of the funcfactory version
+//TODO: rethink query and querynext...
+trait PredicatedAndThen[A,B,C] extends ClosedFunctionFactory1[A,C]{
   def elif(pred0: Predicate1[B]):ClosedAndThenElif[A,B,C]
   def elseThen(func: Function1[B,C]):PredicatedAndThen[A,B,C]
-
-  def query(arg0: A):Function1[A,C]
-  def memoize(arg0: A):(C,Function1[A,C])
 
   protected[application] def checkNext(arg0: B):C
   protected[application] def memoizeNext(arg0: B):(C,Function1[A,C])
@@ -16,16 +17,14 @@ trait PredicatedAndThen[A,B,C] extends Function1[A,C]{
 }
 
 trait ClosedAndThenElif[A,B,C]{
-  def apply(func: Function1[B,C]):PredicatedAndThen[A,B,C]
+  def apply(func: Function1[B,C]):PredicatedAndThen[A,B,C] = apply(WrappedFunction(func))
+  def apply(func: ClosedFunctionFactory1[B,C]):PredicatedAndThen[A,B,C]
   def apply[D](func: PredicatedAndThen[B,D,C]):PredicatedAndThen[A,B,C]
 }
 
-trait UnclosedAndThen[A,B,C] extends Function1[A,Option[C]]{
+trait UnclosedAndThen[A,B,C] extends UnclosedFunctionFactory1[A,C]{
   def elif(pred0: Predicate1[B]):UnclosedAndThenElif[A,B,C]
   def elseThen(func: Function1[B,C]):PredicatedAndThen[A,B,C]
-
-  def query(arg0: A):Option[Function1[A,C]]
-  def memoize(arg0: A):Option[(C,Function1[A,C])]
 
   protected[application] def checkNext(arg0: B):Option[C]
   protected[application] def memoizeNext(arg0: B):Option[(C,Function1[A,C])]
@@ -33,18 +32,19 @@ trait UnclosedAndThen[A,B,C] extends Function1[A,Option[C]]{
 }
 
 trait UnclosedAndThenElif[A,B,C]{
-  def apply(func: Function1[B,C]):UnclosedAndThen[A,B,C]
+  def apply(func: Function1[B,C]):UnclosedAndThen[A,B,C] = apply(WrappedFunction(func))
+  def apply(func: ClosedFunctionFactory1[B,C]):UnclosedAndThen[A,B,C]
   def apply[D](func: PredicatedAndThen[B,D,C]):UnclosedAndThen[A,B,C]
 }
 
 /**
  * Applies a predicate to the return of the enclosed function to determine if an andThen operation should be performed.
  */
-case class AndThenIf[A,B,C](pred: Predicate[B], that: Function[A,B], thatTrue: Function[B,C])
+case class AndThenIf[A,B,C](pred: Predicate[B], that: ClosedFunctionFactory1[A,B], thatTrue: ClosedFunctionFactory1[B,C])
   extends UnclosedAndThen[A,B,C]{
 
   def elif(pred0: Predicate1[B]) = new UnclosedAndThenElif[A,B,C]{
-    def apply(thatFalse: Function1[B,C])
+    def apply(thatFalse: ClosedFunctionFactory1[B,C])
       = AndThenEitherIf(pred, that, thatTrue, AndThenIf(pred0, that, thatFalse))
     def apply[D](thatFalse: PredicatedAndThen[B,D,C])
       = AndThenEitherIf(pred, that, thatTrue, AndThenIf2(pred0, that, thatFalse))
@@ -73,7 +73,7 @@ case class AndThenEitherIf[A,B,C](pred: Predicate[B],
   extends UnclosedAndThen[A,B,C]{
 
   def elif(pred0: Predicate1[B]) = new UnclosedAndThenElif[A,B,C]{
-    def apply(func: Function1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
+    def apply(func: ClosedFunctionFactory1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
     def apply[D](func: PredicatedAndThen[B,D,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
   }
   def elseThen(func: Function1[B,C]) = AndThenEither(pred, that, thatTrue, thatFalse.elseThen(func))
@@ -105,7 +105,7 @@ case class AndThenEither[A,B,C](pred: Predicate[B],
   extends PredicatedAndThen[A,B,C]{
 
   def elif(pred0: Predicate1[B]) = new ClosedAndThenElif[A,B,C]{
-    def apply(func: Function1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
+    def apply(func: ClosedFunctionFactory1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
     def apply[D](func: PredicatedAndThen[B,D,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
   }
   def elseThen(func: Function1[B,C]) = copy(thatFalse = thatFalse.elseThen(func))
@@ -124,7 +124,7 @@ case class AndThenEither[A,B,C](pred: Predicate[B],
 
 case class AndThenElse[A,B,C](that: Function1[A,B], thatFalse: Function1[B,C]) extends PredicatedAndThen[A,B,C]{
   def elif(pred0: Predicate1[B]) = new ClosedAndThenElif[A,B,C]{
-    def apply(func: Function1[B,C]) = AndThenEither(pred0, that, func, AndThenElse(that, thatFalse))
+    def apply(func: ClosedFunctionFactory1[B,C]) = AndThenEither(pred0, that, func, AndThenElse(that, thatFalse))
     def apply[D](func: PredicatedAndThen[B,D,C]) = AndThenEither2(pred0, that, func, AndThenElse(that, thatFalse))
   }
   def elseThen(func: Function1[B,C]) = AndThenElse(that, func)
@@ -139,11 +139,11 @@ case class AndThenElse[A,B,C](that: Function1[A,B], thatFalse: Function1[B,C]) e
   protected[application] def queryNext(arg0: B) = that andThen thatFalse
 }
 
-case class AndThenIf2[A,B,C,D](pred: Predicate[B], that: Function[A,B], thatTrue: PredicatedAndThen[B,D,C])
+case class AndThenIf2[A,B,C,D](pred: Predicate[B], that: ClosedFunctionFactory1[A,B], thatTrue: PredicatedAndThen[B,D,C])
   extends UnclosedAndThen[A,B,C]{
 
   def elif(pred0: Predicate1[B]) = new UnclosedAndThenElif[A,B,C]{
-    def apply(thatFalse: Function1[B,C])
+    def apply(thatFalse: ClosedFunctionFactory1[B,C])
       = AndThenEitherIf(pred, that, thatTrue, AndThenIf(pred0, that, thatFalse))
     def apply[D](thatFalse: PredicatedAndThen[B,D,C])
       = AndThenEitherIf(pred, that, thatTrue, AndThenIf2(pred0, that, thatFalse))
@@ -174,7 +174,7 @@ case class AndThenEitherIf2[A,B,C,D](pred: Predicate[B],
   extends UnclosedAndThen[A,B,C]{
 
   def elif(pred0: Predicate1[B]) = new UnclosedAndThenElif[A,B,C]{
-    def apply(func: Function1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
+    def apply(func: ClosedFunctionFactory1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
     def apply[D](func: PredicatedAndThen[B,D,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
   }
   def elseThen(func: Function1[B,C]) = AndThenEither(pred, that, thatTrue, thatFalse.elseThen(func))
@@ -204,7 +204,7 @@ case class AndThenEither2[A,B,C,D](pred: Predicate[B],
   extends PredicatedAndThen[A,B,C]{
 
   def elif(pred0: Predicate1[B]) = new ClosedAndThenElif[A,B,C]{
-    def apply(func: Function1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
+    def apply(func: ClosedFunctionFactory1[B,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
     def apply[D](func: PredicatedAndThen[B,D,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
   }
   def elseThen(func: Function1[B,C]) = copy(thatFalse = thatFalse.elseThen(func))
@@ -229,7 +229,7 @@ case class AndThenEither2[A,B,C,D](pred: Predicate[B],
 
 case class AndThenElse2[A,B,C,D](that: Function1[A,B], thatFalse: PredicatedAndThen[B,D,C]) extends PredicatedAndThen[A,B,C]{
   def elif(pred0: Predicate1[B]) = new ClosedAndThenElif[A,B,C]{
-    def apply(func: Function1[B,C]) = AndThenEither(pred0, that, func, AndThenElse2.this)
+    def apply(func: ClosedFunctionFactory1[B,C]) = AndThenEither(pred0, that, func, AndThenElse2.this)
     def apply[D](func: PredicatedAndThen[B,D,C]) = AndThenEither2(pred0, that, func, AndThenElse2.this)
   }
   def elseThen(func: Function1[B,C]) = AndThenElse(that, func)

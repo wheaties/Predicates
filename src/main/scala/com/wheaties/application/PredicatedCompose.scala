@@ -122,15 +122,16 @@ case class ComposeElse[A,B,C](that: Function[A,B], thatFalse: Function[C,A]) ext
   def apply(arg: C) = that(thatFalse(arg))
 }
 
+//Classes for which the "true" composition is, itself, a nested predicated composition
 case class ComposeIf2[A,B,C,D](pred: Predicate[C], that: Function[A,B], thatTrue: PredicatedCompose[D,A,C])
   extends UnclosedCompose[A,B,C]{
 
   def elif(pred0: Predicate1[C]) = new UnclosedComposeElif[A,B,C]{
     def apply(func: Function1[C,A]) = ComposeEitherIf2(pred, that, thatTrue, ComposeIf(pred0, that, func))
-    def apply[D](func: PredicatedCompose[D,A,C]) = ComposeEitherIf2(pred, that, thatTrue, ComposeIf2(pred0, that, func))
+    def apply[E](func: PredicatedCompose[E,A,C]) = ComposeEitherIf2(pred, that, thatTrue, ComposeIf2(pred0, that, func))
   }
   def elseCompose(thatFalse: Function1[C,A]) = ComposeEither2(pred, that, thatTrue, ComposeElse(that, thatFalse))
-  def elseCompose[D](thatFalse: PredicatedCompose[D,A,C])
+  def elseCompose[E](thatFalse: PredicatedCompose[E,A,C])
     = ComposeEither2(pred, that, thatTrue, ComposeElse2(that, thatFalse))
 
   def query(arg0: C) = if(pred(arg0)) Some(that compose thatTrue.query(arg0)) else None
@@ -153,10 +154,10 @@ case class ComposeEitherIf2[A,B,C,D](pred: Predicate[C],
 
   def elif(pred0: Predicate1[C]) = new UnclosedComposeElif[A,B,C]{
     def apply(func: Function1[C,A]) = copy(thatFalse = thatFalse.elif(pred0)(func))
-    def apply[D](func: PredicatedCompose[D,A,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
+    def apply[E](func: PredicatedCompose[E,A,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
   }
   def elseCompose(func: Function1[C,A]) = ComposeEither2(pred, that, thatTrue, thatFalse.elseCompose(func))
-  def elseCompose[D](func: PredicatedCompose[D,A,C]) = ComposeEither2(pred, that, thatTrue, thatFalse.elseCompose(func))
+  def elseCompose[E](func: PredicatedCompose[E,A,C]) = ComposeEither2(pred, that, thatTrue, thatFalse.elseCompose(func))
 
   def query(arg0: C) = if(pred(arg0)) Some(that compose thatTrue.query(arg0)) else thatFalse.query(arg0)
   def memoize(arg0: C) ={
@@ -178,10 +179,10 @@ case class ComposeEither2[A,B,C,D](pred: Predicate[C],
 
   def elif(pred0: Predicate1[C]) = new ClosedComposeElif[A,B,C]{
     def apply(func: Function1[C,A]) = copy(thatFalse = thatFalse.elif(pred0)(func))
-    def apply[D](func: PredicatedCompose[D,A,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
+    def apply[E](func: PredicatedCompose[E,A,C]) = copy(thatFalse = thatFalse.elif(pred0)(func))
   }
   def elseCompose(func: Function1[C,A]) = copy(thatFalse = thatFalse.elseCompose(func))
-  def elseCompose[D](func: PredicatedCompose[D,A,C]) = copy(thatFalse = thatFalse.elseCompose(func))
+  def elseCompose[E](func: PredicatedCompose[E,A,C]) = copy(thatFalse = thatFalse.elseCompose(func))
 
   def query(arg0: C) = if(pred(arg0)) that compose thatTrue.query(arg0) else thatFalse.query(arg0)
   def memoize(arg0: C) ={
@@ -200,10 +201,10 @@ case class ComposeElse2[A,B,C,D](that: Function1[A,B], thatFalse: PredicatedComp
 
   def elif(pred0: Predicate1[C]) = new ClosedComposeElif[A,B,C]{
     def apply(func: Function1[C,A]) = ComposeEither(pred0, that, func, ComposeElse2.this)
-    def apply[D](func: PredicatedCompose[D,A,C]) = ComposeEither2(pred0, that, func, ComposeElse2.this)
+    def apply[E](func: PredicatedCompose[E,A,C]) = ComposeEither2(pred0, that, func, ComposeElse2.this)
   }
   def elseCompose(func: Function1[C,A]) = ComposeElse(that, func)
-  def elseCompose[D](func: PredicatedCompose[D,A,C]) = ComposeElse2(that, func)
+  def elseCompose[E](func: PredicatedCompose[E,A,C]) = ComposeElse2(that, func)
 
   def query(arg0: C) = that compose thatFalse.query(arg0)
   def memoize(arg0: C) = (apply(arg0), query(arg0))

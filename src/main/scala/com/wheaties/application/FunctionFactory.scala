@@ -8,8 +8,8 @@ trait ClosedFunctionFactory1[A,B] extends Function1[A,B]{
     = WrappedCompose(this, WrappedFunction(func))
   def compose[C](func: ClosedFunctionFactory1[C,A]) = WrappedCompose(this, func)
   override def andThen[C](func: Function1[B,C]):ClosedFunctionFactory1[A,C]
-    = WrappedAndThen(this, WrappedFunction(func))
-  def andThen[C](func: ClosedFunctionFactory1[B,C]) = WrappedAndThen(this, func)
+    = WrappedCompose(WrappedFunction(func), this)
+  def andThen[C](func: ClosedFunctionFactory1[B,C]):ClosedFunctionFactory1[A,C] = WrappedCompose(func, this)
 }
 
 //TODO: add in compose to these too?
@@ -42,20 +42,4 @@ case class WrappedCompose[A,B,C](that: ClosedFunctionFactory1[A,B], thatCompose:
   }
 
   def apply(arg0: C) = that(thatCompose(arg0))
-}
-
-case class WrappedAndThen[A,B,C](that: ClosedFunctionFactory1[A,B], thatAndThen: ClosedFunctionFactory1[B,C])
-  extends ClosedFunctionFactory1[A,C]{
-
-  def query(arg0: A) ={
-    val (out, outFunc) = that.memoize(arg0)
-    outFunc andThen thatAndThen.query(out)
-  }
-  def memoize(arg0: A) ={
-    val (out, outFunc) = that.memoize(arg0)
-    val (out2, outFunc2) = thatAndThen.memoize(out)
-    (out2, outFunc andThen outFunc2)
-  }
-
-  def apply(arg0: A) = thatAndThen(that(arg0))
 }

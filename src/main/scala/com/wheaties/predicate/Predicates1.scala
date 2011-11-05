@@ -18,8 +18,11 @@ trait CompoundPredicate1[A] extends Predicate1[A]{
   val pred2: Predicate1[A]
 }
 
-//object CompoundPredicate1{
-//  def unapply
+object CompoundPredicate1{
+  def unapply[A](pred: CompoundPredicate1[A]):Option[(Predicate1[A], Predicate1[A])] = {
+    Some(pred.pred1, pred.pred2)
+  }
+}
 
 case class Or1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
   def apply(arg0: A) = pred1(arg0) || pred2(arg0)
@@ -38,15 +41,15 @@ case class AndNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Compou
 }
 
 case class Xor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = if(pred1(arg0)) !pred1(arg0) else pred1(arg0)
+  def apply(arg0: A) = if(pred1(arg0)) !pred2(arg0) else pred2(arg0)
 }
 
 case class Nand1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = !(pred1(arg0) && pred1(arg0))
+  def apply(arg0: A) = !(pred1(arg0) && pred2(arg0))
 }
 
 case class Nor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = !(pred1(arg0) || pred1(arg0))
+  def apply(arg0: A) = !(pred1(arg0) || pred2(arg0))
 }
 
 case class Not1[A](pred: Predicate1[A]) extends Predicate1[A]{

@@ -12,7 +12,6 @@ trait ClosedFunctionFactory1[A,B] extends Function1[A,B]{
   def andThen[C](func: ClosedFunctionFactory1[B,C]):ClosedFunctionFactory1[A,C] = WrappedCompose(func, this)
 }
 
-//TODO: add in compose to these too?
 trait UnclosedFunctionFactory1[A,B] extends Function1[A,Option[B]]{
   def query(arg0: A):Option[Function1[A,B]]
   def memoize(arg0: A):Option[(B,Function1[A,B])]
@@ -26,6 +25,8 @@ case class WrappedFunction[A,B](that: Function1[A,B]) extends ClosedFunctionFact
   def memoize(arg0: A) = (apply(arg0), query(arg0))
 
   def apply(arg0: A) = that(arg0)
+
+  override def toString() = that.toString()
 }
 
 case class WrappedCompose[A,B,C](that: ClosedFunctionFactory1[A,B], thatCompose: ClosedFunctionFactory1[C,A])
@@ -42,4 +43,6 @@ case class WrappedCompose[A,B,C](that: ClosedFunctionFactory1[A,B], thatCompose:
   }
 
   def apply(arg0: C) = that(thatCompose(arg0))
+
+  override def toString() = that.toString() + "(" + thatCompose.toString() + ")"
 }

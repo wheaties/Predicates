@@ -2,6 +2,7 @@ package com.wheaties.application
 
 import com.wheaties.predicate.Predicate1
 import com.wheaties.predicate.Predicate._
+import com.wheaties.function.{UnclosedFunctionFactory1, WrappedFunction, ClosedFunctionFactory1}
 
 trait PredicatedAndThen[A,B,C] extends ClosedFunctionFactory1[A,C]{
   val that: ClosedFunctionFactory1[A,B]

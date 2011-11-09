@@ -1,7 +1,7 @@
 package com.wheaties.application
 
 import com.wheaties.predicate.Predicate._
-import com.wheaties.predicate.Predicate1
+import com.wheaties.function.{ClosedFunctionFactory1, WrappedFunction}
 
 object PredicatedComposition{
   implicit def func2pred[A,B](func: Function1[A,B]) = new PredicatedComposition[A,B] {

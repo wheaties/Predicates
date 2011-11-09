@@ -1,6 +1,7 @@
 package com.wheaties.application
 
 import com.wheaties.predicate.Predicate1
+import com.wheaties.function.{WrappedFunction, UnclosedFunctionFactory1, ClosedFunctionFactory1}
 
 object ApplyIf1{
   implicit def applyIf[A,B](func: Function1[A,B])(pred: Predicate1[A])= ApplyIf1(pred, WrappedFunction(func))

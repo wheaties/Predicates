@@ -2,7 +2,7 @@ package com.wheaties.application
 
 import com.wheaties.predicate.Predicate1
 import com.wheaties.predicate.Predicate._
-
+import com.wheaties.function.{WrappedFunction, UnclosedFunctionFactory1, ClosedFunctionFactory1}
 
 trait PredicatedCompose[A,B,C] extends ClosedFunctionFactory1[C,B]{
   def elif(pred0: Predicate1[C]):ClosedComposeElif[A,B,C]

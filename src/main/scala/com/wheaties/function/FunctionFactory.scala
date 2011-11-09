@@ -1,4 +1,4 @@
-package com.wheaties.application
+package com.wheaties.function
 
 trait ClosedFunctionFactory1[A,B] extends Function1[A,B]{
   def query(arg0: A):Function1[A,B]
@@ -12,6 +12,7 @@ trait ClosedFunctionFactory1[A,B] extends Function1[A,B]{
   def andThen[C](func: ClosedFunctionFactory1[B,C]):ClosedFunctionFactory1[A,C] = WrappedCompose(func, this)
 }
 
+//TODO: need 1-22 of these too
 trait UnclosedFunctionFactory1[A,B] extends Function1[A,Option[B]]{
   def query(arg0: A):Option[Function1[A,B]]
   def memoize(arg0: A):Option[(B,Function1[A,B])]

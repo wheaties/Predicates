@@ -1,0 +1,8 @@
+The idea for this library sprang from the fact that I haven't seen any explicit support for functions that return boolean values in the scala language itself.  There are plenty of cases where there is implicit support, namely in the calling conventions of "filter" or "partition" (of Traversable-Like.)  However, combining functions is carried out with standard boolean operators &&, || and !.  That's it.
+I wanted to create a library which did two things:
+ 1. Explicit support for Predicates and logical composition of the form "and, or, nor, nand, xor, and not."
+ 2. Lay the foundations for predicated composition of functions.
+
+On the first part I think I've done well.  There wasn't much to add except for predicate logic expressions.  Now, with a tiny, little DSL for combining these entities together which clearly expresses the type of condition (rather than looking it up on Wikipedia everytime to make sure they were done right) I can focus on writing correct code.
+
+On the second front, it's still a work in progress.  I hope to soon have this in working order.

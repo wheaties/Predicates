@@ -3,6 +3,7 @@ package com.wheaties.predicate
 /**
  * Factory object to produce "not" predicate modifier.
  */
+@deprecated
 object Not {
   def apply[A](pred: Predicate1[A]) = Not1(pred)
   def apply[A,B](pred: Predicate2[A,B]) = Not2(pred)

@@ -1,7 +1,11 @@
 package com.wheaties.predicate
 
-package object Predicate{
+package object predicate{
   type Predicate[A] = Predicate1[A]
+  type Not[A] = Not1[A]
+
+  def not(value: Boolean) = !value
+  implicit def sugarIs[A](value: A) = new{ def is(pred: Predicate[A]) = pred(value) }
 
   implicit def convert1[A](func: Function[A, Boolean]) = new Predicate1[A]{ def apply(x: A) = func.apply(x) }
   implicit def convert2[A,B](func: Function2[A,B, Boolean]) = new Predicate2[A,B]{ def apply(arg0: A, arg1: B) = func.apply(arg0,arg1) }

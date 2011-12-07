@@ -6,7 +6,7 @@ trait Predicate3[A,B,C] extends Function3[A,B,C,Boolean] {
 	def and(that: Predicate3[A,B,C]) = And3(this, that)
 	def andNot(that: Predicate3[A,B,C]) = AndNot3(this, that)
 	def xor(that: Predicate3[A,B,C]) = Xor3(this, that)
-  def nxor(that: Predicate2[A,B,C]) = Nxor3(this, that)
+  def nxor(that: Predicate3[A,B,C]) = Nxor3(this, that)
 	def nand(that: Predicate3[A,B,C]) = Nand3(this, that)
 	def nor(that: Predicate3[A,B,C]) = Nor3(this, that)
 	

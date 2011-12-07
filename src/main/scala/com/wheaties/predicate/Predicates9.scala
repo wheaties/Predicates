@@ -6,7 +6,7 @@ trait Predicate9[A,B,C,D,E,F,G,H,I] extends Function9[A,B,C,D,E,F,G,H,I,Boolean]
 	def and(that: Predicate9[A,B,C,D,E,F,G,H,I]) = And9(this, that)
 	def andNot(that: Predicate9[A,B,C,D,E,F,G,H,I]) = AndNot9(this, that)
 	def xor(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Xor9(this, that)
-  def nxor(that: Predicate8[A,B,C,D,E,F,G,H,I]) = Nxor9(this, that)
+  def nxor(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Nxor9(this, that)
 	def nand(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Nand9(this, that)
 	def nor(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Nor9(this, that)
 

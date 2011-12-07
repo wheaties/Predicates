@@ -6,6 +6,7 @@ trait Predicate12[A,B,C,D,E,F,G,H,I,J,K,L] extends Function12[A,B,C,D,E,F,G,H,I,
 	def and(that: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) = And12(this, that)
 	def andNot(that: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) = AndNot12(this, that)
 	def xor(that: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) = Xor12(this, that)
+  def nxor(that: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) = Nxor12(this, that)
 	def nand(that: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) = Nand12(this, that)
 	def nor(that: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) = Nor12(this, that)
 
@@ -41,6 +42,10 @@ case class AndNot12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,
 
 case class Xor12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
   def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) else pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
+}
+
+case class Nxor12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
+  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)) pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
 }
 
 case class Nand12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{

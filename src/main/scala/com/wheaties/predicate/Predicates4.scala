@@ -6,6 +6,7 @@ trait Predicate4[A,B,C,D] extends Function4[A,B,C,D,Boolean] {
 	def and(that: Predicate4[A,B,C,D]) = And4(this, that)
 	def andNot(that: Predicate4[A,B,C,D]) = AndNot4(this, that)
 	def xor(that: Predicate4[A,B,C,D]) = Xor4(this, that)
+  def nxor(that: Predicate4[A,B,C,D]) = Nxor4(this, that)
 	def nand(that: Predicate4[A,B,C,D]) = Nand4(this, that)
 	def nor(that: Predicate4[A,B,C,D]) = Nor4(this, that)
 	
@@ -41,6 +42,10 @@ case class AndNot4[A,B,C,D](pred1: Predicate4[A,B,C,D], pred2: Predicate4[A,B,C,
 
 case class Xor4[A,B,C,D](pred1: Predicate4[A,B,C,D], pred2: Predicate4[A,B,C,D]) extends CompoundPredicate4[A,B,C,D]{
   def apply(arg0: A, arg1: B, arg2: C, arg3: D) = if(pred1(arg0, arg1, arg2, arg3)) !pred2(arg0, arg1, arg2, arg3) else pred2(arg0, arg1, arg2, arg3)
+}
+
+case class Nxor4[A,B,C,D](pred1: Predicate4[A,B,C,D], pred2: Predicate4[A,B,C,D]) extends CompoundPredicate4[A,B,C,D]{
+  def apply(arg0: A, arg1: B, arg2: C, arg3: D) = if(pred1(arg0, arg1, arg2, arg3)) pred2(arg0, arg1, arg2, arg3) else !pred2(arg0, arg1, arg2, arg3)
 }
 
 case class Nand4[A,B,C,D](pred1: Predicate4[A,B,C,D], pred2: Predicate4[A,B,C,D]) extends CompoundPredicate4[A,B,C,D]{

@@ -6,6 +6,7 @@ trait Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S] extends Function19[A,B,
 	def and(that: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) = And19(this, that)
 	def andNot(that: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) = AndNot19(this, that)
 	def xor(that: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) = Xor19(this, that)
+  def nxor(that: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) = Nxor19(this, that)
 	def nand(that: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) = Nand19(this, that)
 	def nor(that: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) = Nor19(this, that)
 
@@ -41,6 +42,10 @@ case class AndNot19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S](pred1: Predicate19[A,
 
 case class Xor19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S](pred1: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S], pred2: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) extends CompoundPredicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]{
   def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L,arg12: M,arg13: N,arg14: O,arg15: P,arg16: Q,arg17: R,arg18: S) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18) else pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18)
+}
+
+case class Nxor19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S](pred1: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S], pred2: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) extends CompoundPredicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]{
+  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L,arg12: M,arg13: N,arg14: O,arg15: P,arg16: Q,arg17: R,arg18: S) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18)) pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18)
 }
 
 case class Nand19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S](pred1: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S], pred2: Predicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]) extends CompoundPredicate19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]{

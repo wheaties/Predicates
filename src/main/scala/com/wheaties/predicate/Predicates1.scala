@@ -7,6 +7,7 @@ trait Predicate1[A] extends Function[A,Boolean] {
   def and(that: Predicate1[A]) = And1(this, that)
   def andNot(that: Predicate1[A]) = AndNot1(this, that)
   def xor(that: Predicate1[A]) = Xor1(this, that)
+  def nxor(that: Predicate1[A]) = Nxor1(this, that)
   def nand(that: Predicate1[A]) = Nand1(this, that)
   def nor(that: Predicate1[A]) = Nor1(this, that)
 
@@ -42,6 +43,10 @@ case class AndNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends Compou
 
 case class Xor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
   def apply(arg0: A) = if(pred1(arg0)) !pred2(arg0) else pred2(arg0)
+}
+
+case class Nxor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
+  def apply(arg0: A) = if(pred1(arg0)) pred2(arg0) else !pred2(arg0)
 }
 
 case class Nand1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{

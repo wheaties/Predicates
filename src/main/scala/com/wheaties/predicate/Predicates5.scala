@@ -6,6 +6,7 @@ trait Predicate5[A,B,C,D,E] extends Function5[A,B,C,D,E,Boolean] {
 	def and(that: Predicate5[A,B,C,D,E]) = And5(this, that)
 	def andNot(that: Predicate5[A,B,C,D,E]) = AndNot5(this, that)
 	def xor(that: Predicate5[A,B,C,D,E]) = Xor5(this, that)
+  def nxor(that: Predicate5[A,B,C,D,E]) = Nxor5(this, that)
 	def nand(that: Predicate5[A,B,C,D,E]) = Nand5(this, that)
 	def nor(that: Predicate5[A,B,C,D,E]) = Nor5(this, that)
 
@@ -41,6 +42,10 @@ case class AndNot5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,
 
 case class Xor5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
   def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = if(pred1(arg0, arg1, arg2, arg3, arg4)) !pred2(arg0, arg1, arg2, arg3, arg4) else pred2(arg0, arg1, arg2, arg3, arg4)
+}
+
+case class Nxor5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
+  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = if(pred1(arg0, arg1, arg2, arg3, arg4)) pred2(arg0, arg1, arg2, arg3, arg4) else !pred2(arg0, arg1, arg2, arg3, arg4)
 }
 
 case class Nand5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{

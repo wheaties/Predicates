@@ -6,6 +6,7 @@ trait Predicate3[A,B,C] extends Function3[A,B,C,Boolean] {
 	def and(that: Predicate3[A,B,C]) = And3(this, that)
 	def andNot(that: Predicate3[A,B,C]) = AndNot3(this, that)
 	def xor(that: Predicate3[A,B,C]) = Xor3(this, that)
+  def nxor(that: Predicate2[A,B,C]) = Nxor3(this, that)
 	def nand(that: Predicate3[A,B,C]) = Nand3(this, that)
 	def nor(that: Predicate3[A,B,C]) = Nor3(this, that)
 	
@@ -41,6 +42,10 @@ case class AndNot3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) ex
 
 case class Xor3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
   def apply(arg0: A, arg1: B, arg2: C) = if(pred1(arg0, arg1, arg2)) !pred2(arg0, arg1, arg2) else pred2(arg0, arg1, arg2)
+}
+
+case class Nxor3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
+  def apply(arg0: A, arg1: B, arg2: C) = if(pred1(arg0, arg1, arg2)) pred2(arg0, arg1, arg2) else !pred2(arg0, arg1, arg2)
 }
 
 case class Nand3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{

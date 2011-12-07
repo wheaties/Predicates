@@ -6,6 +6,7 @@ trait Predicate8[A,B,C,D,E,F,G,H] extends Function8[A,B,C,D,E,F,G,H,Boolean] {
 	def and(that: Predicate8[A,B,C,D,E,F,G,H]) = And8(this, that)
 	def andNot(that: Predicate8[A,B,C,D,E,F,G,H]) = AndNot8(this, that)
 	def xor(that: Predicate8[A,B,C,D,E,F,G,H]) = Xor8(this, that)
+  def nxor(that: Predicate8[A,B,C,D,E,F,G,H]) = Nxor8(this, that)
 	def nand(that: Predicate8[A,B,C,D,E,F,G,H]) = Nand8(this, that)
 	def nor(that: Predicate8[A,B,C,D,E,F,G,H]) = Nor8(this, that)
 
@@ -41,6 +42,10 @@ case class AndNot8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: P
 
 case class Xor8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
   def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) else pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
+}
+
+case class Nxor8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
+  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)) pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 }
 
 case class Nand8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{

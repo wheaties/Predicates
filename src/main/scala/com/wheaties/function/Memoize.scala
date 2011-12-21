@@ -25,9 +25,6 @@ trait MemoizeIteration[A,B]{
   }
 }
 
-/**
- * Depth first search for both the result and the function that calculated it.
- */
 case class Memoize[A,B](base: Node[A,B]) extends DepthFirst[A,B,(B,A => B)] with MemoizeIteration[A,B]{
   def apply(arg0: A)= base match{
     case Leaf(Elem(pred, func)) => if(pred(arg0)) Pass(func(arg0), func) else Fail

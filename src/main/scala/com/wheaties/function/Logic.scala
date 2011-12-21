@@ -26,7 +26,7 @@ trait AllPaths[A,B,C] extends (A => List[Result[C]]) with Logic[C]{
     init match{
       case Pass(_) :: xs => process(xs, init.head :: acc)
       case Fail :: xs => process(xs, acc)
-      case x :: xs => process(xs ::: iterate(x), acc)
+      case x :: xs => process(iterate(x) ::: xs, acc)
       case Nil => acc
     }
   }

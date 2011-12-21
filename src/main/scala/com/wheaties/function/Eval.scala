@@ -1,8 +1,5 @@
 package com.wheaties.function
 
-/**
- * Evaulation defines the iteration strategy
- */
 trait EvalIteration[A]{
   self: Logic[A] =>
 
@@ -21,9 +18,6 @@ trait EvalIteration[A]{
   }
 }
 
-/**
- * Eval performs a depth-first traversal of the nodes.
- */
 case class Eval[A,B](base: Node[A,B]) extends DepthFirst[A,B,B] with EvalIteration[B]{
   def apply(arg0: A) = base match {
     case Leaf(Elem(pred, func)) => if(pred(arg0)) Pass(func(arg0)) else Fail
@@ -32,7 +26,7 @@ case class Eval[A,B](base: Node[A,B]) extends DepthFirst[A,B,B] with EvalIterati
   }
 }
 
-case class Conditionally[A,B](base: Node[A,B]) extends AllPaths[A,B,B] with EvalIteration[B]{
+case class EvalAll[A,B](base: Node[A,B]) extends AllPaths[A,B,B] with EvalIteration[B]{
   def apply(arg0: A)= base match{
     case Leaf(Elem(pred, func)) => List(if(pred(arg0)) Pass(func(arg0)) else Fail)
     case Root(func, nodes) => process(nodes.map(Continue(func(arg0), _)), Nil)

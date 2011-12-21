@@ -25,9 +25,6 @@ trait QueryIteration[A,B]{
   }
 }
 
-/**
- * Depth first traversal in search of the final function.
- */
 case class Query[A,B](base: Node[A,B]) extends DepthFirst[A,B,A => B] with QueryIteration[A,B]{
   def apply(arg0: A) = base match{
     case Leaf(Elem(pred, func)) => if(pred(arg0)) Pass(func) else Fail

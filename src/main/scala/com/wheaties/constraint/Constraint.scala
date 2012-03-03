@@ -2,160 +2,158 @@ package com.wheaties.constraint
 
 import com.wheaties.predicate.Predicate1
 
-//TODO: add implicit conversion, _.forall() won't convert to a constraint otherwise
-//TODO: add in implicit for predicate => constraint
-trait Constraint1[A] extends Predicate1[(A => Boolean)] {
-  def constrain[B](that: Constraint1[B]) = new Constraint2[A,B]{
-    def apply(pred: Function2[A,B,Boolean]) = Constraint1.this(x1 => that(pred(x1, _)))
+package object constraint{
+  implicit def pred2const1[A](pred: Predicate1[Function1[A,Boolean]]) = new Constraint1[A]{
+    def apply(arg: Function1[A,Boolean]) = pred(arg)
+  }
+  implicit def func2const1[A](func: Function1[A,Boolean] => Boolean) = new Constraint1[A]{
+    def apply(arg: Function1[A,Boolean]) = func(arg)
   }
 
-  def suchThat(pred: A => Boolean) = apply(pred)
-}
-
-trait Constraint2[A,B] extends Predicate1[Function2[A,B,Boolean]]{
-  def constrain[C](that: Constraint1[C]) = new Constraint3[A,B,C]{
-    def apply(pred: Function3[A,B,C,Boolean]) = Constraint2.this((x1,x2) => that(pred(x1, x2, _)))
+  implicit def pred2const2[A,B](pred: Predicate1[Function2[A,B,Boolean]]) = new Constraint2[A,B]{
+    def apply(arg: Function2[A,B,Boolean]) = pred(arg)
+  }
+  implicit def func2const2[A,B](func: Function2[A,B,Boolean] => Boolean) = new Constraint2[A,B]{
+    def apply(arg: Function2[A,B,Boolean]) = func(arg)
   }
 
-  def suchThat(pred: Function2[A,B,Boolean]) = apply(pred)
-}
-
-trait Constraint3[A,B,C] extends Predicate1[Function3[A,B,C,Boolean]]{
-  def constrain[D](that: Constraint1[D]) = new Constraint4[A,B,C,D]{
-    def apply(pred: Function4[A,B,C,D,Boolean]) = Constraint3.this((x1,x2,x3) => that(pred(x1, x2, x3, _)))
+  implicit def pred2const3[A,B,C](pred: Predicate1[Function3[A,B,C,Boolean]]) = new Constraint3[A,B,C]{
+    def apply(arg: Function3[A,B,C,Boolean]) = pred(arg)
+  }
+  implicit def func2const3[A,B,C](func: Function3[A,B,C,Boolean] => Boolean) = new Constraint3[A,B,C]{
+    def apply(arg: Function3[A,B,C,Boolean]) = func(arg)
   }
 
-  def suchThat(pred: Function3[A,B,C,Boolean]) = apply(pred)
-}
+  implicit def pred2const4[A,B,C,D](pred: Predicate1[Function4[A,B,C,D,Boolean]]) = new Constraint4[A,B,C,D]{
+    def apply(arg: Function4[A,B,C,D,Boolean]) = pred(arg)
+  }
+  implicit def func2const4[A,B,C,D](func: Function4[A,B,C,D,Boolean] => Boolean) = new Constraint4[A,B,C,D]{
+    def apply(arg: Function4[A,B,C,D,Boolean]) = func(arg)
+  }
 
-trait Constraint4[A,B,C,D]extends Predicate1[Function4[A,B,C,D,Boolean]]{
-	def constrain[E](that: Constraint1[E]) = new Constraint5[A,B,C,D]{
-		def apply(pred: Function4[A,B,C,D,Boolean]) = Constraint4.this((x0,x1,x2,x3) => that(pred(x0,x1,x2,x3,_)))
-	}
+  implicit def pred2const5[A,B,C,D,E](pred: Predicate1[Function5[A,B,C,D,E,Boolean]]) = new Constraint5[A,B,C,D,E]{
+    def apply(arg: Function5[A,B,C,D,E,Boolean]) = pred(arg)
+  }
+  implicit def func2const5[A,B,C,D,E](func: Function5[A,B,C,D,E,Boolean] => Boolean) = new Constraint5[A,B,C,D,E]{
+    def apply(arg: Function5[A,B,C,D,E,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function4[A,B,C,D,Boolean]) = apply(pred)
-}
-trait Constraint5[A,B,C,D,E]extends Predicate1[Function5[A,B,C,D,E,Boolean]]{
-	def constrain[F](that: Constraint1[F]) = new Constraint6[A,B,C,D,E]{
-		def apply(pred: Function5[A,B,C,D,E,Boolean]) = Constraint5.this((x0,x1,x2,x3,x4) => that(pred(x0,x1,x2,x3,x4,_)))
-	}
+  implicit def pred2const6[A,B,C,D,E,F](pred: Predicate1[Function6[A,B,C,D,E,F,Boolean]]) = new Constraint6[A,B,C,D,E,F]{
+    def apply(arg: Function6[A,B,C,D,E,F,Boolean]) = pred(arg)
+  }
+  implicit def func2const6[A,B,C,D,E,F](func: Function6[A,B,C,D,E,F,Boolean] => Boolean) = new Constraint6[A,B,C,D,E,F]{
+    def apply(arg: Function6[A,B,C,D,E,F,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function5[A,B,C,D,E,Boolean]) = apply(pred)
-}
-trait Constraint6[A,B,C,D,E,F]extends Predicate1[Function6[A,B,C,D,E,F,Boolean]]{
-	def constrain[G](that: Constraint1[G]) = new Constraint7[A,B,C,D,E,F]{
-		def apply(pred: Function6[A,B,C,D,E,F,Boolean]) = Constraint6.this((x0,x1,x2,x3,x4,x5) => that(pred(x0,x1,x2,x3,x4,x5,_)))
-	}
+  implicit def pred2const7[A,B,C,D,E,F,G](pred: Predicate1[Function7[A,B,C,D,E,F,G,Boolean]]) = new Constraint7[A,B,C,D,E,F,G]{
+    def apply(arg: Function7[A,B,C,D,E,F,G,Boolean]) = pred(arg)
+  }
+  implicit def func2const7[A,B,C,D,E,F,G](func: Function7[A,B,C,D,E,F,G,Boolean] => Boolean) = new Constraint7[A,B,C,D,E,F,G]{
+    def apply(arg: Function7[A,B,C,D,E,F,G,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function6[A,B,C,D,E,F,Boolean]) = apply(pred)
-}
-trait Constraint7[A,B,C,D,E,F,G]extends Predicate1[Function7[A,B,C,D,E,F,G,Boolean]]{
-	def constrain[H](that: Constraint1[H]) = new Constraint8[A,B,C,D,E,F,G]{
-		def apply(pred: Function7[A,B,C,D,E,F,G,Boolean]) = Constraint7.this((x0,x1,x2,x3,x4,x5,x6) => that(pred(x0,x1,x2,x3,x4,x5,x6,_)))
-	}
+  implicit def pred2const8[A,B,C,D,E,F,G,H](pred: Predicate1[Function8[A,B,C,D,E,F,G,H,Boolean]]) = new Constraint8[A,B,C,D,E,F,G,H]{
+    def apply(arg: Function8[A,B,C,D,E,F,G,H,Boolean]) = pred(arg)
+  }
+  implicit def func2const8[A,B,C,D,E,F,G,H](func: Function8[A,B,C,D,E,F,G,H,Boolean] => Boolean) = new Constraint8[A,B,C,D,E,F,G,H]{
+    def apply(arg: Function8[A,B,C,D,E,F,G,H,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function7[A,B,C,D,E,F,G,Boolean]) = apply(pred)
-}
-trait Constraint8[A,B,C,D,E,F,G,H]extends Predicate1[Function8[A,B,C,D,E,F,G,H,Boolean]]{
-	def constrain[I](that: Constraint1[I]) = new Constraint9[A,B,C,D,E,F,G,H]{
-		def apply(pred: Function8[A,B,C,D,E,F,G,H,Boolean]) = Constraint8.this((x0,x1,x2,x3,x4,x5,x6,x7) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,_)))
-	}
+  implicit def pred2const9[A,B,C,D,E,F,G,H,I](pred: Predicate1[Function9[A,B,C,D,E,F,G,H,I,Boolean]]) = new Constraint9[A,B,C,D,E,F,G,H,I]{
+    def apply(arg: Function9[A,B,C,D,E,F,G,H,I,Boolean]) = pred(arg)
+  }
+  implicit def func2const9[A,B,C,D,E,F,G,H,I](func: Function9[A,B,C,D,E,F,G,H,I,Boolean] => Boolean) = new Constraint9[A,B,C,D,E,F,G,H,I]{
+    def apply(arg: Function9[A,B,C,D,E,F,G,H,I,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function8[A,B,C,D,E,F,G,H,Boolean]) = apply(pred)
-}
-trait Constraint9[A,B,C,D,E,F,G,H,I]extends Predicate1[Function9[A,B,C,D,E,F,G,H,I,Boolean]]{
-	def constrain[J](that: Constraint1[J]) = new Constraint10[A,B,C,D,E,F,G,H,I]{
-		def apply(pred: Function9[A,B,C,D,E,F,G,H,I,Boolean]) = Constraint9.this((x0,x1,x2,x3,x4,x5,x6,x7,x8) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,_)))
-	}
+  implicit def pred2const10[A,B,C,D,E,F,G,H,I,J](pred: Predicate1[Function10[A,B,C,D,E,F,G,H,I,J,Boolean]]) = new Constraint10[A,B,C,D,E,F,G,H,I,J]{
+    def apply(arg: Function10[A,B,C,D,E,F,G,H,I,J,Boolean]) = pred(arg)
+  }
+  implicit def func2const10[A,B,C,D,E,F,G,H,I,J](func: Function10[A,B,C,D,E,F,G,H,I,J,Boolean] => Boolean) = new Constraint10[A,B,C,D,E,F,G,H,I,J]{
+    def apply(arg: Function10[A,B,C,D,E,F,G,H,I,J,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function9[A,B,C,D,E,F,G,H,I,Boolean]) = apply(pred)
-}
-trait Constraint10[A,B,C,D,E,F,G,H,I,J]extends Predicate1[Function10[A,B,C,D,E,F,G,H,I,J,Boolean]]{
-	def constrain[K](that: Constraint1[K]) = new Constraint11[A,B,C,D,E,F,G,H,I,J]{
-		def apply(pred: Function10[A,B,C,D,E,F,G,H,I,J,Boolean]) = Constraint10.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,_)))
-	}
+  implicit def pred2const11[A,B,C,D,E,F,G,H,I,J,K](pred: Predicate1[Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean]]) = new Constraint11[A,B,C,D,E,F,G,H,I,J,K]{
+    def apply(arg: Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean]) = pred(arg)
+  }
+  implicit def func2const11[A,B,C,D,E,F,G,H,I,J,K](func: Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean] => Boolean) = new Constraint11[A,B,C,D,E,F,G,H,I,J,K]{
+    def apply(arg: Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function10[A,B,C,D,E,F,G,H,I,J,Boolean]) = apply(pred)
-}
-trait Constraint11[A,B,C,D,E,F,G,H,I,J,K]extends Predicate1[Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean]]{
-	def constrain[L](that: Constraint1[L]) = new Constraint12[A,B,C,D,E,F,G,H,I,J,K]{
-		def apply(pred: Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean]) = Constraint11.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,_)))
-	}
+  implicit def pred2const12[A,B,C,D,E,F,G,H,I,J,K,L](pred: Predicate1[Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean]]) = new Constraint12[A,B,C,D,E,F,G,H,I,J,K,L]{
+    def apply(arg: Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean]) = pred(arg)
+  }
+  implicit def func2const12[A,B,C,D,E,F,G,H,I,J,K,L](func: Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean] => Boolean) = new Constraint12[A,B,C,D,E,F,G,H,I,J,K,L]{
+    def apply(arg: Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean]) = apply(pred)
-}
-trait Constraint12[A,B,C,D,E,F,G,H,I,J,K,L]extends Predicate1[Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean]]{
-	def constrain[M](that: Constraint1[M]) = new Constraint13[A,B,C,D,E,F,G,H,I,J,K,L]{
-		def apply(pred: Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean]) = Constraint12.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,_)))
-	}
+  implicit def pred2const13[A,B,C,D,E,F,G,H,I,J,K,L,M](pred: Predicate1[Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean]]) = new Constraint13[A,B,C,D,E,F,G,H,I,J,K,L,M]{
+    def apply(arg: Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean]) = pred(arg)
+  }
+  implicit def func2const13[A,B,C,D,E,F,G,H,I,J,K,L,M](func: Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean] => Boolean) = new Constraint13[A,B,C,D,E,F,G,H,I,J,K,L,M]{
+    def apply(arg: Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function12[A,B,C,D,E,F,G,H,I,J,K,L,Boolean]) = apply(pred)
-}
-trait Constraint13[A,B,C,D,E,F,G,H,I,J,K,L,M]extends Predicate1[Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean]]{
-	def constrain[N](that: Constraint1[N]) = new Constraint14[A,B,C,D,E,F,G,H,I,J,K,L,M]{
-		def apply(pred: Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean]) = Constraint13.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,_)))
-	}
+  implicit def pred2const14[A,B,C,D,E,F,G,H,I,J,K,L,M,N](pred: Predicate1[Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean]]) = new Constraint14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]{
+    def apply(arg: Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean]) = pred(arg)
+  }
+  implicit def func2const14[A,B,C,D,E,F,G,H,I,J,K,L,M,N](func: Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean] => Boolean) = new Constraint14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]{
+    def apply(arg: Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function13[A,B,C,D,E,F,G,H,I,J,K,L,M,Boolean]) = apply(pred)
-}
+  implicit def pred2const15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O](pred: Predicate1[Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean]]) = new Constraint15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O]{
+    def apply(arg: Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean]) = pred(arg)
+  }
+  implicit def func2const15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O](func: Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean] => Boolean) = new Constraint15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O]{
+    def apply(arg: Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean]) = func(arg)
+  }
 
-trait Constraint14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]extends Predicate1[Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean]]{
-	def constrain[O](that: Constraint1[O]) = new Constraint15[A,B,C,D,E,F,G,H,I,J,K,L,M,N]{
-		def apply(pred: Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean]) = Constraint14.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,_)))
-	}
+  implicit def pred2const16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P](pred: Predicate1[Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean]]) = new Constraint16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]{
+    def apply(arg: Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean]) = pred(arg)
+  }
+  implicit def func2const16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P](func: Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean] => Boolean) = new Constraint16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]{
+    def apply(arg: Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean]) = apply(pred)
-}
-trait Constraint15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O]extends Predicate1[Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean]]{
-	def constrain[P](that: Constraint1[P]) = new Constraint16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O]{
-		def apply(pred: Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean]) = Constraint15.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,_)))
-	}
+  implicit def pred2const17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q](pred: Predicate1[Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean]]) = new Constraint17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q]{
+    def apply(arg: Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean]) = pred(arg)
+  }
+  implicit def func2const17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q](func: Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean] => Boolean) = new Constraint17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q]{
+    def apply(arg: Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function15[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Boolean]) = apply(pred)
-}
-trait Constraint16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]extends Predicate1[Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean]]{
-	def constrain[Q](that: Constraint1[Q]) = new Constraint17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]{
-		def apply(pred: Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean]) = Constraint16.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,_)))
-	}
+  implicit def pred2const18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R](pred: Predicate1[Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean]]) = new Constraint18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R]{
+    def apply(arg: Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean]) = pred(arg)
+  }
+  implicit def func2const18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R](func: Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean] => Boolean) = new Constraint18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R]{
+    def apply(arg: Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean]) = apply(pred)
-}
-trait Constraint17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q]extends Predicate1[Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean]]{
-	def constrain[R](that: Constraint1[R]) = new Constraint18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q]{
-		def apply(pred: Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean]) = Constraint17.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,_)))
-	}
+  implicit def pred2const19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S](pred: Predicate1[Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean]]) = new Constraint19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]{
+    def apply(arg: Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean]) = pred(arg)
+  }
+  implicit def func2const19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S](func: Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean] => Boolean) = new Constraint19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]{
+    def apply(arg: Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function17[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,Boolean]) = apply(pred)
-}
-trait Constraint18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R]extends Predicate1[Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean]]{
-	def constrain[S](that: Constraint1[S]) = new Constraint19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R]{
-		def apply(pred: Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean]) = Constraint18.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,_)))
-	}
+  implicit def pred2const20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T](pred: Predicate1[Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean]]) = new Constraint20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T]{
+    def apply(arg: Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean]) = pred(arg)
+  }
+  implicit def func2const20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T](func: Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean] => Boolean) = new Constraint20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T]{
+    def apply(arg: Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function18[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,Boolean]) = apply(pred)
-}
-trait Constraint19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]extends Predicate1[Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean]]{
-	def constrain[T](that: Constraint1[T]) = new Constraint20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S]{
-		def apply(pred: Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean]) = Constraint19.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,_)))
-	}
+  implicit def pred2const21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U](pred: Predicate1[Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean]]) = new Constraint21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U]{
+    def apply(arg: Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean]) = pred(arg)
+  }
+  implicit def func2const21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U](func: Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean] => Boolean) = new Constraint21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U]{
+    def apply(arg: Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean]) = func(arg)
+  }
 
-	def suchThat(pred: Function19[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,Boolean]) = apply(pred)
-}
-trait Constraint20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T]extends Predicate1[Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean]]{
-	def constrain[U](that: Constraint1[U]) = new Constraint21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T]{
-		def apply(pred: Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean]) = Constraint20.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,_)))
-	}
-
-	def suchThat(pred: Function20[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,Boolean]) = apply(pred)
-}
-trait Constraint21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U]extends Predicate1[Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean]]{
-	def constrain[V](that: Constraint1[V]) = new Constraint22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U]{
-		def apply(pred: Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean]) = Constraint21.this((x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20) => that(pred(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,_)))
-	}
-
-	def suchThat(pred: Function21[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,Boolean]) = apply(pred)
-}
-
-trait Constraint22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V]extends Predicate1[Function22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,Boolean]]{
-	def suchThat(pred: Function22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,Boolean]) = apply(pred)
+  implicit def pred2const22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V](pred: Predicate1[Function22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,Boolean]]) = new Constraint22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V]{
+    def apply(arg: Function22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,Boolean]) = pred(arg)
+  }
+  implicit def func2const22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V](func: Function22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,Boolean] => Boolean) = new Constraint22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V]{
+    def apply(arg: Function22[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,Boolean]) = func(arg)
+  }
 }

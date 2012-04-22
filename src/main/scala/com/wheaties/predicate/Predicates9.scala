@@ -1,16 +1,16 @@
 package com.wheaties.predicate
 
-trait Predicate9[A,B,C,D,E,F,G,H,I] extends Function9[A,B,C,D,E,F,G,H,I,Boolean] {
-	def or(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Or9(this, that)
-	def orNot(that: Predicate9[A,B,C,D,E,F,G,H,I]) = OrNot9(this, that)
-	def and(that: Predicate9[A,B,C,D,E,F,G,H,I]) = And9(this, that)
-	def andNot(that: Predicate9[A,B,C,D,E,F,G,H,I]) = AndNot9(this, that)
-	def xor(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Xor9(this, that)
-  def nxor(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Nxor9(this, that)
-	def nand(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Nand9(this, that)
-	def nor(that: Predicate9[A,B,C,D,E,F,G,H,I]) = Nor9(this, that)
+trait Predicate9[-A, -B, -C, -D, -E, -F, -G, -H, -I] extends Function9[A, B, C, D, E, F, G, H, I, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = Or9(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = OrNot9(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = And9(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = AndNot9(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = Xor9(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = Nxor9(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = Nand9(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I](that: Predicate9[AA, BB, CC, DD, EE, FF, GG, HH, II]) = Nor9(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H, arg8: I):Boolean
 }
 
 trait CompoundPredicate9[A,B,C,D,E,F,G,H,I] extends Predicate9[A,B,C,D,E,F,G,H,I]{

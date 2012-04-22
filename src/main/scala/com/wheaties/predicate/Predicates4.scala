@@ -1,19 +1,20 @@
 package com.wheaties.predicate
 
-trait Predicate4[A,B,C,D] extends Function4[A,B,C,D,Boolean] {
-	def or(that: Predicate4[A,B,C,D]) = Or4(this, that)
-  def orNot(that: Predicate4[A,B,C,D]) = OrNot4(this, that)
-	def and(that: Predicate4[A,B,C,D]) = And4(this, that)
-	def andNot(that: Predicate4[A,B,C,D]) = AndNot4(this, that)
-	def xor(that: Predicate4[A,B,C,D]) = Xor4(this, that)
-  def nxor(that: Predicate4[A,B,C,D]) = Nxor4(this, that)
-	def nand(that: Predicate4[A,B,C,D]) = Nand4(this, that)
-	def nor(that: Predicate4[A,B,C,D]) = Nor4(this, that)
-	
+trait Predicate4[-A, -B, -C, -D] extends Function4[A, B, C, D, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = Or4(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = OrNot4(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = And4(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = AndNot4(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = Xor4(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = Nxor4(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = Nand4(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D](that: Predicate4[AA, BB, CC, DD]) = Nor4(this, that)
+
 	def apply(arg0: A, arg1: B, arg2: C, arg3: D):Boolean
 }
 
-trait CompoundPredicate4[A,B,C,D] extends Predicate4[A,B,C,D]{
+
+trait CompoundPredicate4[-A,-B,-C,-D] extends Predicate4[A,B,C,D]{
 val pred1: Predicate4[A,B,C,D]
 val pred2: Predicate4[A,B,C,D]
 }

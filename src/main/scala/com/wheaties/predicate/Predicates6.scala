@@ -1,19 +1,20 @@
 package com.wheaties.predicate
 
-trait Predicate6[A,B,C,D,E,F] extends Function6[A,B,C,D,E,F,Boolean] {
-	def or(that: Predicate6[A,B,C,D,E,F]) = Or6(this, that)
-	def orNot(that: Predicate6[A,B,C,D,E,F]) = OrNot6(this, that)
-	def and(that: Predicate6[A,B,C,D,E,F]) = And6(this, that)
-	def andNot(that: Predicate6[A,B,C,D,E,F]) = AndNot6(this, that)
-	def xor(that: Predicate6[A,B,C,D,E,F]) = Xor6(this, that)
-  def nxor(that: Predicate6[A,B,C,D,E,F]) = Nxor6(this, that)
-	def nand(that: Predicate6[A,B,C,D,E,F]) = Nand6(this, that)
-	def nor(that: Predicate6[A,B,C,D,E,F]) = Nor6(this, that)
+trait Predicate6[-A, -B, -C, -D, -E, -F] extends Function6[A, B, C, D, E, F, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Or6(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = OrNot6(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = And6(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = AndNot6(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Xor6(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Nxor6(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Nand6(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Nor6(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F):Boolean
 }
 
-trait CompoundPredicate6[A,B,C,D,E,F] extends Predicate6[A,B,C,D,E,F]{
+
+trait CompoundPredicate6[-A,-B,-C,-D,-E,-F] extends Predicate6[A,B,C,D,E,F]{
   val pred1: Predicate6[A,B,C,D,E,F]
   val pred2: Predicate6[A,B,C,D,E,F]
 }

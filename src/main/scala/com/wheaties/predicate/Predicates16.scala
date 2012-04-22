@@ -1,17 +1,18 @@
 package com.wheaties.predicate
 
-trait Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P] extends Function16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Boolean] {
-	def or(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = Or16(this, that)
-	def orNot(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = OrNot16(this, that)
-	def and(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = And16(this, that)
-	def andNot(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = AndNot16(this, that)
-	def xor(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = Xor16(this, that)
-  def nxor(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = Nxor16(this, that)
-	def nand(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = Nand16(this, that)
-	def nor(that: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]) = Nor16(this, that)
+trait Predicate16[-A, -B, -C, -D, -E, -F, -G, -H, -I, -J, -K, -L, -M, -N, -O, -P] extends Function16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = Or16(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = OrNot16(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = And16(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = AndNot16(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = Xor16(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = Nxor16(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = Nand16(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N, OO <: O, PP <: P](that: Predicate16[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN, OO, PP]) = Nor16(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L,arg12: M,arg13: N,arg14: O,arg15: P):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H, arg8: I, arg9: J, arg10: K, arg11: L, arg12: M, arg13: N, arg14: O, arg15: P):Boolean
 }
+
 
 trait CompoundPredicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P] extends Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]{
   val pred1: Predicate16[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P]

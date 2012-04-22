@@ -1,19 +1,19 @@
 package com.wheaties.predicate
 
-trait Predicate11[A,B,C,D,E,F,G,H,I,J,K] extends Function11[A,B,C,D,E,F,G,H,I,J,K,Boolean] {
-	def or(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = Or11(this, that)
-	def orNot(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = OrNot11(this, that)
-	def and(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = And11(this, that)
-	def andNot(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = AndNot11(this, that)
-	def xor(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = Xor11(this, that)
-  def nxor(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = Nxor11(this, that)
-	def nand(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = Nand11(this, that)
-	def nor(that: Predicate11[A,B,C,D,E,F,G,H,I,J,K]) = Nor11(this, that)
+trait Predicate11[-A, -B, -C, -D, -E, -F, -G, -H, -I, -J, -K] extends Function11[A, B, C, D, E, F, G, H, I, J, K, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = Or11(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = OrNot11(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = And11(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = AndNot11(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = Xor11(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = Nxor11(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = Nand11(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K](that: Predicate11[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK]) = Nor11(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H, arg8: I, arg9: J, arg10: K):Boolean
 }
 
-trait CompoundPredicate11[A,B,C,D,E,F,G,H,I,J,K] extends Predicate11[A,B,C,D,E,F,G,H,I,J,K]{
+trait CompoundPredicate11[-A,-B,-C,-D,-E,-F,-G,-H,-I,-J,-K] extends Predicate11[A,B,C,D,E,F,G,H,I,J,K]{
   val pred1: Predicate11[A,B,C,D,E,F,G,H,I,J,K]
   val pred2: Predicate11[A,B,C,D,E,F,G,H,I,J,K]
 }

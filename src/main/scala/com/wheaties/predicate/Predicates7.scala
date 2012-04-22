@@ -1,19 +1,19 @@
 package com.wheaties.predicate
 
-trait Predicate7[A,B,C,D,E,F,G] extends Function7[A,B,C,D,E,F,G,Boolean] {
-	def or(that: Predicate7[A,B,C,D,E,F,G]) = Or7(this, that)
-	def orNot(that: Predicate7[A,B,C,D,E,F,G]) = OrNot7(this, that)
-	def and(that: Predicate7[A,B,C,D,E,F,G]) = And7(this, that)
-	def andNot(that: Predicate7[A,B,C,D,E,F,G]) = AndNot7(this, that)
-	def xor(that: Predicate7[A,B,C,D,E,F,G]) = Xor7(this, that)
-  def nxor(that: Predicate7[A,B,C,D,E,F,G]) = Nxor7(this, that)
-	def nand(that: Predicate7[A,B,C,D,E,F,G]) = Nand7(this, that)
-	def nor(that: Predicate7[A,B,C,D,E,F,G]) = Nor7(this, that)
+trait Predicate7[-A, -B, -C, -D, -E, -F, -G] extends Function7[A, B, C, D, E, F, G, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Or7(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = OrNot7(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = And7(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = AndNot7(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Xor7(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Nxor7(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Nand7(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Nor7(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G):Boolean
 }
 
-trait CompoundPredicate7[A,B,C,D,E,F,G] extends Predicate7[A,B,C,D,E,F,G]{
+trait CompoundPredicate7[-A,-B,-C,-D,-E,-F,-G] extends Predicate7[A,B,C,D,E,F,G]{
   val pred1: Predicate7[A,B,C,D,E,F,G]
   val pred2: Predicate7[A,B,C,D,E,F,G]
 }

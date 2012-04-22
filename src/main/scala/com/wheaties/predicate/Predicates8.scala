@@ -1,16 +1,16 @@
 package com.wheaties.predicate
 
-trait Predicate8[A,B,C,D,E,F,G,H] extends Function8[A,B,C,D,E,F,G,H,Boolean] {
-	def or(that: Predicate8[A,B,C,D,E,F,G,H]) = Or8(this, that)
-	def orNot(that: Predicate8[A,B,C,D,E,F,G,H]) = OrNot8(this, that)
-	def and(that: Predicate8[A,B,C,D,E,F,G,H]) = And8(this, that)
-	def andNot(that: Predicate8[A,B,C,D,E,F,G,H]) = AndNot8(this, that)
-	def xor(that: Predicate8[A,B,C,D,E,F,G,H]) = Xor8(this, that)
-  def nxor(that: Predicate8[A,B,C,D,E,F,G,H]) = Nxor8(this, that)
-	def nand(that: Predicate8[A,B,C,D,E,F,G,H]) = Nand8(this, that)
-	def nor(that: Predicate8[A,B,C,D,E,F,G,H]) = Nor8(this, that)
+trait Predicate8[-A, -B, -C, -D, -E, -F, -G, -H] extends Function8[A, B, C, D, E, F, G, H, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Or8(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = OrNot8(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = And8(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = AndNot8(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Xor8(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Nxor8(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Nand8(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Nor8(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H):Boolean
 }
 
 trait CompoundPredicate8[A,B,C,D,E,F,G,H] extends Predicate8[A,B,C,D,E,F,G,H]{

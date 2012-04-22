@@ -1,19 +1,20 @@
 package com.wheaties.predicate
 
-trait Predicate2[A,B] extends Function2[A,B,Boolean] {
-	def or(that: Predicate2[A,B]) = Or2(this, that)
-  def orNot(that: Predicate2[A,B]) = OrNot2(this, that)
-	def and(that: Predicate2[A,B]) = And2(this, that)
-	def andNot(that: Predicate2[A,B]) = AndNot2(this, that)
-	def xor(that: Predicate2[A,B]) = Xor2(this, that)
-  def nxor(that: Predicate2[A,B]) = Nxor2(this, that)
-	def nand(that: Predicate2[A,B]) = Nand2(this, that)
-	def nor(that: Predicate2[A,B]) = Nor2(this, that)
+trait Predicate2[-A, -B] extends Function2[A, B, Boolean] {
+	def or[AA <: A, BB <: B](that: Predicate2[AA, BB]) = Or2(this, that)
+	def orNot[AA <: A, BB <: B](that: Predicate2[AA, BB]) = OrNot2(this, that)
+	def and[AA <: A, BB <: B](that: Predicate2[AA, BB]) = And2(this, that)
+	def andNot[AA <: A, BB <: B](that: Predicate2[AA, BB]) = AndNot2(this, that)
+	def xor[AA <: A, BB <: B](that: Predicate2[AA, BB]) = Xor2(this, that)
+	def nxor[AA <: A, BB <: B](that: Predicate2[AA, BB]) = Nxor2(this, that)
+	def nand[AA <: A, BB <: B](that: Predicate2[AA, BB]) = Nand2(this, that)
+	def nor[AA <: A, BB <: B](that: Predicate2[AA, BB]) = Nor2(this, that)
 
 	def apply(arg0: A, arg1: B):Boolean
 }
 
-trait CompoundPredicate2[A,B] extends Predicate2[A,B]{
+
+trait CompoundPredicate2[-A,-B] extends Predicate2[A,B]{
   val pred1: Predicate2[A,B]
   val pred2: Predicate2[A,B]
 }

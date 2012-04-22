@@ -1,19 +1,20 @@
 package com.wheaties.predicate
 
-trait Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N] extends Function14[A,B,C,D,E,F,G,H,I,J,K,L,M,N,Boolean] {
-	def or(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = Or14(this, that)
-	def orNot(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = OrNot14(this, that)
-	def and(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = And14(this, that)
-	def andNot(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = AndNot14(this, that)
-	def xor(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = Xor14(this, that)
-  def nxor(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = Nxor14(this, that)
-	def nand(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = Nand14(this, that)
-	def nor(that: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]) = Nor14(this, that)
+trait Predicate14[-A, -B, -C, -D, -E, -F, -G, -H, -I, -J, -K, -L, -M, -N] extends Function14[A, B, C, D, E, F, G, H, I, J, K, L, M, N, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = Or14(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = OrNot14(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = And14(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = AndNot14(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = Xor14(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = Nxor14(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = Nand14(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L, MM <: M, NN <: N](that: Predicate14[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL, MM, NN]) = Nor14(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L,arg12: M,arg13: N):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H, arg8: I, arg9: J, arg10: K, arg11: L, arg12: M, arg13: N):Boolean
 }
 
-trait CompoundPredicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N] extends Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]{
+
+trait CompoundPredicate14[-A,-B,-C,-D,-E,-F,-G,-H,-I,-J,-K,-L,-M,-N] extends Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]{
   val pred1: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]
   val pred2: Predicate14[A,B,C,D,E,F,G,H,I,J,K,L,M,N]
 }

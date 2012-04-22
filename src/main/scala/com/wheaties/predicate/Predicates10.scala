@@ -1,19 +1,19 @@
 package com.wheaties.predicate
 
-trait Predicate10[A,B,C,D,E,F,G,H,I,J] extends Function10[A,B,C,D,E,F,G,H,I,J,Boolean] {
-	def or(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = Or10(this, that)
-	def orNot(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = OrNot10(this, that)
-	def and(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = And10(this, that)
-	def andNot(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = AndNot10(this, that)
-	def xor(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = Xor10(this, that)
-  def nxor(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = Nxor10(this, that)
-	def nand(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = Nand10(this, that)
-	def nor(that: Predicate10[A,B,C,D,E,F,G,H,I,J]) = Nor10(this, that)
+trait Predicate10[-A, -B, -C, -D, -E, -F, -G, -H, -I, -J] extends Function10[A, B, C, D, E, F, G, H, I, J, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = Or10(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = OrNot10(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = And10(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = AndNot10(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = Xor10(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = Nxor10(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = Nand10(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J](that: Predicate10[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ]) = Nor10(this, that)
 
-	def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J):Boolean
+	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H, arg8: I, arg9: J):Boolean
 }
 
-trait CompoundPredicate10[A,B,C,D,E,F,G,H,I,J] extends Predicate10[A,B,C,D,E,F,G,H,I,J]{
+trait CompoundPredicate10[-A,-B,-C,-D,-E,-F,-G,-H,-I,-J] extends Predicate10[A,B,C,D,E,F,G,H,I,J]{
   val pred1: Predicate10[A,B,C,D,E,F,G,H,I,J]
   val pred2: Predicate10[A,B,C,D,E,F,G,H,I,J]
 }

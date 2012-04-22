@@ -1,19 +1,19 @@
 package com.wheaties.predicate
 
-trait Predicate5[A,B,C,D,E] extends Function5[A,B,C,D,E,Boolean] {
-	def or(that: Predicate5[A,B,C,D,E]) = Or5(this, that)
-  def orNot(that: Predicate5[A,B,C,D,E]) = OrNot5(this, that)
-	def and(that: Predicate5[A,B,C,D,E]) = And5(this, that)
-	def andNot(that: Predicate5[A,B,C,D,E]) = AndNot5(this, that)
-	def xor(that: Predicate5[A,B,C,D,E]) = Xor5(this, that)
-  def nxor(that: Predicate5[A,B,C,D,E]) = Nxor5(this, that)
-	def nand(that: Predicate5[A,B,C,D,E]) = Nand5(this, that)
-	def nor(that: Predicate5[A,B,C,D,E]) = Nor5(this, that)
+trait Predicate5[-A, -B, -C, -D, -E] extends Function5[A, B, C, D, E, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Or5(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = OrNot5(this, that)
+	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = And5(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = AndNot5(this, that)
+	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Xor5(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Nxor5(this, that)
+	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Nand5(this, that)
+	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Nor5(this, that)
 
 	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E):Boolean
 }
 
-trait CompoundPredicate5[A,B,C,D,E] extends Predicate5[A,B,C,D,E]{
+trait CompoundPredicate5[-A,-B,-C,-D,-E] extends Predicate5[A,B,C,D,E]{
   val pred1: Predicate5[A,B,C,D,E]
   val pred2: Predicate5[A,B,C,D,E]
 }

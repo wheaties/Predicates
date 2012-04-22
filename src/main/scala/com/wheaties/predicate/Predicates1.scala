@@ -1,20 +1,19 @@
 package com.wheaties.predicate
 
-
-trait Predicate1[A] extends Function[A,Boolean] {
-  def or(that: Predicate1[A]) = Or1(this, that)
-  def orNot(that: Predicate1[A]) = OrNot1(this, that)
-  def and(that: Predicate1[A]) = And1(this, that)
-  def andNot(that: Predicate1[A]) = AndNot1(this, that)
-  def xor(that: Predicate1[A]) = Xor1(this, that)
-  def nxor(that: Predicate1[A]) = Nxor1(this, that)
-  def nand(that: Predicate1[A]) = Nand1(this, that)
-  def nor(that: Predicate1[A]) = Nor1(this, that)
+trait Predicate1[-A] extends Function[A,Boolean] {
+  def or[B <: A](that: Predicate1[B]) = Or1(this, that)
+  def orNot[B <: A](that: Predicate1[B]) = OrNot1(this, that)
+  def and[B <: A](that: Predicate1[B]) = And1(this, that)
+  def andNot[B <: A](that: Predicate1[B]) = AndNot1(this, that)
+  def xor[B <: A](that: Predicate1[B]) = Xor1(this, that)
+  def nxor[B <: A](that: Predicate1[B]) = Nxor1(this, that)
+  def nand[B <: A](that: Predicate1[B]) = Nand1(this, that)
+  def nor[B <: A](that: Predicate1[B]) = Nor1(this, that)
 
   def apply(arg0: A):Boolean
 }
 
-trait CompoundPredicate1[A] extends Predicate1[A]{
+trait CompoundPredicate1[-A] extends Predicate1[A]{
   val pred1: Predicate1[A]
   val pred2: Predicate1[A]
 }

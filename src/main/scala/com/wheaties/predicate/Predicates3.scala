@@ -1,19 +1,20 @@
 package com.wheaties.predicate
 
-trait Predicate3[A,B,C] extends Function3[A,B,C,Boolean] {
-	def or(that: Predicate3[A,B,C]) = Or3(this, that)
-  def orNot(that: Predicate3[A,B,C]) = OrNot3(this, that)
-	def and(that: Predicate3[A,B,C]) = And3(this, that)
-	def andNot(that: Predicate3[A,B,C]) = AndNot3(this, that)
-	def xor(that: Predicate3[A,B,C]) = Xor3(this, that)
-  def nxor(that: Predicate3[A,B,C]) = Nxor3(this, that)
-	def nand(that: Predicate3[A,B,C]) = Nand3(this, that)
-	def nor(that: Predicate3[A,B,C]) = Nor3(this, that)
-	
+trait Predicate3[-A, -B, -C] extends Function3[A, B, C, Boolean] {
+	def or[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Or3(this, that)
+	def orNot[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = OrNot3(this, that)
+	def and[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = And3(this, that)
+	def andNot[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = AndNot3(this, that)
+	def xor[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Xor3(this, that)
+	def nxor[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Nxor3(this, that)
+	def nand[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Nand3(this, that)
+	def nor[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Nor3(this, that)
+
 	def apply(arg0: A, arg1: B, arg2: C):Boolean
 }
 
-trait CompoundPredicate3[A,B,C] extends Predicate3[A,B,C]{
+
+trait CompoundPredicate3[-A,-B,-C] extends Predicate3[A,B,C]{
 val pred1: Predicate3[A,B,C]
 val pred2: Predicate3[A,B,C]
 }

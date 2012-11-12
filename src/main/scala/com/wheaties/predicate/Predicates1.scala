@@ -1,69 +1,53 @@
 package com.wheaties.predicate
 
-trait Predicate1[-A] extends Function[A,Boolean] {
-  def or[B <: A](that: Predicate1[B]) = Or1(this, that)
-  def orNot[B <: A](that: Predicate1[B]) = OrNot1(this, that)
-  def and[B <: A](that: Predicate1[B]) = And1(this, that)
-  def andNot[B <: A](that: Predicate1[B]) = AndNot1(this, that)
-  def xor[B <: A](that: Predicate1[B]) = Xor1(this, that)
-  def nxor[B <: A](that: Predicate1[B]) = Nxor1(this, that)
-  def nand[B <: A](that: Predicate1[B]) = Nand1(this, that)
-  def nor[B <: A](that: Predicate1[B]) = Nor1(this, that)
+trait Predicate1[-T1] extends Function[T1,Boolean] with Predicate-Like[Predicate1[T1]]
 
-  def apply(arg0: A):Boolean
-}
+//TODO: think about reintroducing the various classes if we need to type class on the logic connection ("And", "Or", etc.)
+class Connective1[T1,T2 <: T1] extends Connective[Predicate1[T1],Predicate1[T2],Predicate1[T1]]{
+  def or(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q){
+    def apply(arg0: T1) = _1(arg0) || _2(arg0)
+  }
 
-trait CompoundPredicate1[-A] extends Predicate1[A]{
-  val pred1: Predicate1[A]
-  val pred2: Predicate1[A]
-}
+  def and(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q)}
+    def apply(arg0: T1) = _1(arg0) && _2(arg0)
+  }
 
-object CompoundPredicate1{
-  def unapply[A](pred: CompoundPredicate1[A]):Option[(Predicate1[A], Predicate1[A])] = {
-    Some(pred.pred1, pred.pred2)
+  def xor(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q){
+    def apply(arg0: T1) = if(_1(arg0)) !_2(arg0) else _2(arg0)
+  }
+
+  def nxor(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q){
+    def apply(arg0: T1) = if(_1(arg0)) _2(arg0) else !_2(arg0)
+  }
+
+  def nand(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q){
+    def apply(arg0: T1) = !(_1(arg0) && _2(arg0))
+  }
+
+  def nor(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q){
+    def apply(arg0: T1) = !(_1(arg0) || _2(arg0))
   }
 }
 
-case class Or1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = pred1(arg0) || pred2(arg0)
+abstract class CompoundPredicate1[T1,T2 <: T1](val _1: Predicate1[T1], val _2: Predicate1[T2]) extends Predicate1[T1] with Product2[Predicate1[T1],Predicate1[T2]]{
+  def hashCode = _1.hashCode * 31 + _2.hashCode
+
+  def equals(that: Any) = that match{
+    case Or1(p, q) => p == _1 && q == _2
+    case _ => false
+  }
 }
 
-case class OrNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = pred1(arg0) || !pred2(arg0)
+class Not1[T1] extends Negation[Predicate1[T1]]{
+  def not(pred: Precidate1[T1]) = new Predicate1[T1]{
+    def apply(arg0: T1) = !pred(arg0)
+  }
 }
 
-case class And1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = pred1(arg0) && pred2(arg0)
-}
-
-case class AndNot1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = pred1(arg0) && !pred2(arg0)
-}
-
-case class Xor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = if(pred1(arg0)) !pred2(arg0) else pred2(arg0)
-}
-
-case class Nxor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = if(pred1(arg0)) pred2(arg0) else !pred2(arg0)
-}
-
-case class Nand1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = !(pred1(arg0) && pred2(arg0))
-}
-
-case class Nor1[A](pred1: Predicate1[A], pred2: Predicate1[A]) extends CompoundPredicate1[A]{
-  def apply(arg0: A) = !(pred1(arg0) || pred2(arg0))
-}
-
-case class Not1[A](pred: Predicate1[A]) extends Predicate1[A]{
-  def apply(arg0: A) = !pred(arg0)
-}
-
-case object Always1 extends Predicate1[Any]{
+object Always1 extends Predicate1[Any]{
   def apply(arg0: Any) = true
 }
 
-case object Never1 extends Predicate1[Any]{
+object Never1 extends Predicate1[Any]{
   def apply(arg0: Any) = false
 }

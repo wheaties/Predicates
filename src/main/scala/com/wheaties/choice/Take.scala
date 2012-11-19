@@ -6,7 +6,7 @@ trait PlanLim extends Plan  //Type for Take with a defined limit
 trait PlanSatLim extends Plan //Type for Take with both a limit ad a satisfiability
 
 //TODO: perhaps this should be a part of "Choice" parameterized on "Choose" and "Skip"
-trait Chooser[P <: Plan] extends Choice with Predicate-Like[Chooser[P]]{
+trait Chooser[P <: Plan] extends Choice{
   def every(n: Int)(implicit limit: Limit[Chooser,P]) = limit.every(this, n)
   def all(implicit limit: Limit[Chooser,P]) = limit.all(this)
   def first(n: Int)(implicit limit: Limit[Chooser,P]) = limit.first(this, n)
@@ -21,17 +21,17 @@ object Choose extends Chooser[Plan]
 
 //Think about how to do "last." Perhaps need to feed this a Builder object?
 trait IterationScheme{
-  def accept[A,B >: A](value: A, sat: B => Boolean): Boolean
+  def accept[A](value: A, sat: A => Boolean): Boolean
 }
 
 class AcceptAll extends IterationScheme{
-  def accept[A,B >: A](value: A, sat: B => Boolean) = sat(value)
+  def accept[A](value: A, sat: A => Boolean) = sat(value)
 }
 
 class AcceptEvery(n: Int) extends IterationScheme{
   private var step = -1
   
-  def accept[A,B >: A](value: A, sat: B => Boolean) ={
+  def accept[A](value: A, sat: A => Boolean) ={
     val eval = sat(value)
     if(eval) step += 1
     if(step == n) step = 0
@@ -43,7 +43,7 @@ class AcceptEvery(n: Int) extends IterationScheme{
 class AcceptFirst(n: Int) extends IterationScheme{
   private var count = -1
 
-  def accept[A,B >: A](value: A, sat: B => Boolean) ={
+  def accept[A](value: A, sat: A => Boolean) ={
     val eval = sat(value)
     if(eval) count += 1
 
@@ -51,13 +51,14 @@ class AcceptFirst(n: Int) extends IterationScheme{
   }
 }
 
+//This works for limiting up to but not over. It doesn't limit less than.
 class AcceptExactly(n: Int) extends IterationScheme{
-  private var count = -1
+  private var count = 0
 
   def accept[A,B >: A](value: A, sat: B => Boolean) ={
     val eval = sat(value)
     if(eval) count += 1
-    if(n <= count) throw new Exception("Exceeded acceptable limit of %s" format n)
+    if(n < count) throw new Exception("Exceeded acceptable limit of %s" format n)
 
     eval
   }

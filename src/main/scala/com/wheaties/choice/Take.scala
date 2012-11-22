@@ -1,66 +1,14 @@
 package com.wheaties.choice
 
-sealed trait Plan
-trait PlanSat extends Plan  //Type for Take with a defined satisfiability
-trait PlanLim extends Plan  //Type for Take with a defined limit
-trait PlanSatLim extends Plan //Type for Take with both a limit ad a satisfiability
+sealed trait Sat
+sealed trait SatDef extends Sat
+sealed trait SatUndef extends Sat
 
-//TODO: perhaps this should be a part of "Choice" parameterized on "Choose" and "Skip"
-trait Chooser[P <: Plan] extends Choice{
-  def every(n: Int)(implicit limit: Limit[Chooser,P]) = limit.every(this, n)
-  def all(implicit limit: Limit[Chooser,P]) = limit.all(this)
-  def first(n: Int)(implicit limit: Limit[Chooser,P]) = limit.first(this, n)
-  def last(n: Int)(implicit limit: Limit[Chooser,P]) = limit.last(this, n)
-  def exactly(n: Int)(implicit limit: Limit[Chooser,P]) = limit.exactly(this, n)
+sealed trait Lim
+sealed trait LimDef extends Lim
+sealed trait LimUndef extends Lim
 
-  def satisfying[B](pred: B => Boolean)(implicit cond: Conditional[Chooser,P]) = cond.condition[B](this, pred)
-}
+
 
 //TODO: fill in the nitty gritty
-object Choose extends Chooser[Plan]
-
-//TODO: Think about how to do "last." Perhaps need to feed this a Builder object?
-trait IterationScheme{
-  def accept[A](value: A, sat: A => Boolean): Boolean
-}
-
-class AcceptAll extends IterationScheme{
-  def accept[A](value: A, sat: A => Boolean) = sat(value)
-}
-
-class AcceptEvery(n: Int) extends IterationScheme{
-  private var step = -1
-  
-  def accept[A](value: A, sat: A => Boolean) ={
-    val eval = sat(value)
-    if(eval) step += 1
-    if(step == n) step = 0
-
-    eval && step == 0
-  }
-}
-
-class AcceptFirst(n: Int) extends IterationScheme{
-  private var count = -1
-
-  def accept[A](value: A, sat: A => Boolean) ={
-    val eval = sat(value)
-    if(eval) count += 1
-
-    eval && count < n
-  }
-}
-
-//TODO: This works for limiting up to but not over. It doesn't limit less than.
-//TODO: throwing the exception here is bad. If composing two Choices with "and" condition, could cause problems.
-class AcceptExactly(n: Int) extends IterationScheme{
-  private var count = 0
-
-  def accept[A,B >: A](value: A, sat: B => Boolean) ={
-    val eval = sat(value)
-    if(eval) count += 1
-    if(n < count) throw new Exception("Exceeded acceptable limit of %s" format n)
-
-    eval
-  }
-}
+//object Choose extends Chooser[LimUndef,SatUndef]

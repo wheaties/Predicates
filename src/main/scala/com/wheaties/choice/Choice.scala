@@ -28,6 +28,14 @@ trait Choice[-Value, L <: Lim, S <: Sat]{
   def satisfying[B](pred: B => Boolean)(implicit cond: Conditional[this.type]) = cond.condition[L,B](this, pred)
 }
 
+trait ChoiceS[-Value] extends Choice[Value]{
+  def every(n: Int)(implicit limit: Limit[Value,ChoiceS[_]]) = limit.every[Value,S](this, n)
+  def all(implicit limit: Limit[this.type]) = limit.all[Value,S](this)
+  def first(n: Int)(implicit limit: Limit[this.type]) = limit.first[Value,S](this, n)
+  def last(n: Int)(implicit limit: Limit[this.type]) = limit.last[Value,S](this, n)
+  def exactly(n: Int)(implicit limit: Limit[this.type]) = limit.exactly[Value,S](this, n)
+}
+
 trait Getter[A]{
   def get(collection: A, scheme: IterationScheme): A
 }

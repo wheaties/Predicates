@@ -1,4 +1,4 @@
-package com.wheaties.function
+package com.wheaties.logical
 
 object Not{
   def apply[A](that: A)(implicit neg: Negation[A]) = neg.not(that)

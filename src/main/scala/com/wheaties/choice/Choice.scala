@@ -1,12 +1,12 @@
 package com.wheaties.choice
 
 //TODO: there's got to be a way to "partiion" things
-//TODO: there's got to be a way to "mod" things, think maybe need Mapper[In,Mapping,Out]
 trait Choice{
   self =>
 
   def get[A](collection: A)(implicit getter: Getter[A]): A
   def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]): A
+  //def mod[A,B,C](collection: A, f: B)(implicit modifer: Modder[A,B,C]): C
 
   def compose(that: Choice): Choice = that andThen this
 
@@ -14,6 +14,8 @@ trait Choice{
     def get[A](collection: A)(implicit getter: Getter[A]) = that get (self get (collection))
     def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = 
       self set(collection, that set (self get (collection), value))
+    //def mod[A,B,C](collection: A, f: B)(implicit modifer: Modder[A,B,C]) =
+    //  self set(collection, that mod(self get (collection), f))
   }
 }
 
@@ -24,3 +26,7 @@ trait Getter[A]{
 trait Setter[A,B]{
   def set(collection: A, value: B, scheme: IterationScheme): A
 }
+
+//trait Modder[In,Mapper,Out]{
+//  def mod(collection: In, f: Mapper): Out
+//}

@@ -19,7 +19,7 @@ trait Chooser[P <: Plan] extends Choice{
 //TODO: fill in the nitty gritty
 object Choose extends Chooser[Plan]
 
-//Think about how to do "last." Perhaps need to feed this a Builder object?
+//TODO: Think about how to do "last." Perhaps need to feed this a Builder object?
 trait IterationScheme{
   def accept[A](value: A, sat: A => Boolean): Boolean
 }
@@ -51,7 +51,8 @@ class AcceptFirst(n: Int) extends IterationScheme{
   }
 }
 
-//This works for limiting up to but not over. It doesn't limit less than.
+//TODO: This works for limiting up to but not over. It doesn't limit less than.
+//TODO: throwing the exception here is bad. If composing two Choices with "and" condition, could cause problems.
 class AcceptExactly(n: Int) extends IterationScheme{
   private var count = 0
 

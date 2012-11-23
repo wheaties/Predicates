@@ -4,7 +4,7 @@ import com.wheaties.logical._
 
 trait Predicate1[-T1] extends Function1[T1,Boolean] with PredicateLike[Predicate1[T1]]
 
-//TODO: think about reintroducing the various classes if we need to type class on the logic connection ("And", "Or", etc.)
+//TODO: this needs to be an implicit
 class Connective1[T1,T2 <: T1] extends Connective[Predicate1[T1],Predicate1[T2],Predicate1[T1]]{
   def or(p: Predicate1[T1], q: Predicate1[T2]) = new CompoundPredicate1(p, q){
     def apply(arg0: T1) = _1(arg0) || _2(arg0)

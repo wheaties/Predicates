@@ -2,38 +2,36 @@ package com.wheaties.choice
 
 //TODO: there's got to be a way to "partiion" things
 //TODO: this.type bad idea I think
-trait Choice[-Value, L <: Lim, S <: Sat]{
+trait Choice[-Value]{
   self =>
 
   def get[A](collection: A)(implicit getter: Getter[A]): A
   def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]): A
   //def mod[A,B,C](collection: A, f: B)(implicit modifer: Modder[A,B,C]): C
 
-  def compose[V <: Value](that: Choice[V,_,_]): Choice[V,LimDef,SatDef] = that andThen this
+  def compose[V <: Value](that: Choice[V]): Choice[V] = that andThen this
 
-  def andThen[V >: Value](that: Choice[V,_,_]): Choice[Value,LimDef,SatDef] = new Choice[Value,LimDef,SatDef]{
+  def andThen[V >: Value](that: Choice[V]): Choice[Value] = new Choice[Value]{
     def get[A](collection: A)(implicit getter: Getter[A]) = that get (self get (collection))
     def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = 
       self set(collection, that set (self get (collection), value))
     //def mod[A,B,C](collection: A, f: B)(implicit modifer: Modder[A,B,C]) =
     //  self set(collection, that mod(self get (collection), f))
   }
-
-  def every(n: Int)(implicit limit: Limit[this.type]) = limit.every[Value,S](this, n)
-  def all(implicit limit: Limit[this.type]) = limit.all[Value,S](this)
-  def first(n: Int)(implicit limit: Limit[this.type]) = limit.first[Value,S](this, n)
-  def last(n: Int)(implicit limit: Limit[this.type]) = limit.last[Value,S](this, n)
-  def exactly(n: Int)(implicit limit: Limit[this.type]) = limit.exactly[Value,S](this, n)
-
-  def satisfying[B](pred: B => Boolean)(implicit cond: Conditional[this.type]) = cond.condition[L,B](this, pred)
 }
 
+//This is a choice that already has a satisfiability condition, thus can't have another
 trait ChoiceS[-Value] extends Choice[Value]{
-  def every(n: Int)(implicit limit: Limit[Value,ChoiceS[_]]) = limit.every[Value,S](this, n)
-  def all(implicit limit: Limit[this.type]) = limit.all[Value,S](this)
-  def first(n: Int)(implicit limit: Limit[this.type]) = limit.first[Value,S](this, n)
-  def last(n: Int)(implicit limit: Limit[this.type]) = limit.last[Value,S](this, n)
-  def exactly(n: Int)(implicit limit: Limit[this.type]) = limit.exactly[Value,S](this, n)
+  def every[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.every(this, n)
+  def all[Out](implicit limit: Limit[Value,this.type,Out]) = limit.all(this)
+  def first[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.first(this, n)
+  //def last[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.last(this, n)
+  def exactly[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.exactly(this, n)
+}
+
+//This is a Choice that already is limited, thus can't be limited again.
+trait ChoiceL extends Choice[Any]{
+  def satisfying[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.condition[B](this, pred)
 }
 
 trait Getter[A]{
@@ -48,14 +46,14 @@ trait Setter[A,B]{
 //  def mod(collection: In, f: Mapper): Out
 //}
 
-trait Limit[A[_,LimUndef,_]]{
-  def every[Value,S <: Sat](in: A, n: Int): A[Value,LimDef,S]
-  def all[Value,S <: Sat](in: A): A[Value,LimDef,S]
-  def first[Value,S <: Sat](in: A, n: Int): A[Value,LimDef,S]
-  def last[Value,S <: Sat](in: A, n: Int): A[Value,LimDef,S]
-  def exactly[Value,S <: Sat](in: A, n: Int): A[Value,LimDef,S]
+trait Limit[V, C <: ChoiceS[V], Out <: Choice[V]]{
+  def every(in: C, n: Int): Out
+  def all(in: C): Out
+  def first(in: C, n: Int): Out
+  //def last(in: C, n: Int): Out
+  def exactly(in: C, n: Int): Out
 }
 
-trait Conditional[A[_,_,SatUndef]]{
-  def condition[L <: Lim,B](in: A, pred: B => Boolean): A[B,L,SatDef]
+trait Conditional[C <: ChoiceL, Out <: Choice[_]]{
+  def condition[B](in: C, pred: B => Boolean): Out[B]
 }

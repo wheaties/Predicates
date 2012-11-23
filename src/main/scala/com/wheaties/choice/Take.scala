@@ -2,102 +2,317 @@ package com.wheaties.choice
 
 import com.wheaties.logical.{Connective, PredicateLike}
 
-sealed trait Sat
-sealed trait SatDef extends Sat
-sealed trait SatUndef extends Sat
+abstract class Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
+  protected[choice] def scheme: IterationScheme
 
-sealed trait Lim
-sealed trait LimDef extends Lim
-sealed trait LimUndef extends Lim
+  def get[A](collection: A)(implicit getter: Getter[A]) = getter get (collection, scheme)
+  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, scheme)
+}
 
-abstract class Choose[-V,L <: Lim,S <: Sat] extends Choice[V,L,S] with PredicateLike[Choose[V,L,S]]
+abstract class ChooseL extends ChoiceL with PredicateLike[ChooseL]{
+  protected[choice] def scheme: IterationScheme
+
+  def get[A](collection: A)(implicit getter: Getter[A]) = getter get (collection, scheme)
+  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, scheme)
+}
+
+object ChooseAll extends ChooseL{
+  protected[choice] def scheme = new AcceptAll
+}
+
+class ChooseEvery(n: Int) extends ChooseL{
+  protected[choice] def scheme = new AcceptEvery(n)
+}
+
+class ChooseFirst(n: Int) extends ChooseL{
+  protected[choice] def scheme = new AcceptFirst(n)
+}
+
+abstract class ChooseS[-V] extends ChoiceS[V] with PredicateLike[ChooseS[V]]{
+  protected[choice] def scheme: IterationScheme
+
+  def get[A](collection: A)(implicit getter: Getter[A]) = getter get (collection, scheme)
+  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, scheme)
+}
+
+class ChooseIf[-V](pred: V => Boolean) extends ChooseS[V] with PredicateLike[ChooseS[V]]{
+  protected[choice] def scheme = new AcceptIf[V](pred)
+}
 
 object Choose{
-  //TODO: looks like 9 connective definitions, if I'm not mistaken.
-
-
-  def conUUUU[V1, V2 >: V1](choose1: Choose[V1,LimUndef,SatUndef], choose2: Choose[V2,LimUndef,SatUndef]) =
-    new Connective[Choose[V1,LimUndef,SatUndef], Choose[V2,LimUndef,SatUndef], Choose[V1,LimUndef,SatUndef]]{
-
-    }
-
-  def conDUSU[V1, V2 >: V1, L2 <: Lim](choose1: Choose[V1,LimDef,SatUndef], choose2: Choose[V2,L2,SatUndef]) =
-    new Connective[Choose[V1,LimUndef,SatUndef], Choose[V2,L2,SatUndef], Choose[V1,LimDef,SatUndef]]{
-
-    }
-
-  def conSUDU[V1, V2 >: V1, L1 <: Lim](choose1: Choose[V1,L1,SatUndef], choose2: Choose[V2,LimDef,SatUndef]) =
-    new Connective[Choose[V1,L1,SatUndef], Choose[V2,LimDef,SatUndef], Choose[V1,LimDef,SatUndef]]{
-
-    }
-
-  def conUDUS[V1, V2 >: V1, S2 <: Sat](choose1: Choose[V1,LimUndef,SatDef], choose2: Choose[V2,LimUndef,S2]) =
-    new Connective[Choose[V1,LimUndef,SatDef], Choose[V2,LimUndef,S2], Choose[V1,LimUndef,SatDef]]{
-
-    }
-
-  def conUSUD[V1, V2 >: V1, S1 <: Sat](choose1: Choose[V1,LimUndef,S1], choose2: Choose[V2,LimUndef,SatDef]) =
-    new Connective[Choose[V1,LimUndef,S1], Choose[V2,LimUndef,SatDef], Choose[V1,LimUndef,SatDef]]{
-
-    }
+  implicit def conCL[V, C1 <: Choose[V], C2 <: ChooseL] = new ChooseConCL[V]
+  implicit def conCS[V1, V2 >: V1, C1 <: Choose[V1], C2 <: ChooseS[V2]] = new ChooseConCS[V1,V2]
+  implicit def conCC[V1, V2 >: V1, C1 <: Choose[V1], C2 <: Choose[V2]] = new ChooseConCC[V1,V2]
 }
 
-abstract class ChooseConUU[V1, V2 >: V1, C1 <: Choose[V1,LimUndef,SatUndef],C2 <: Choose[V2,LimUndef,SatUndef]]
-    extends Connective[C1,C2,Choose[V1,LimUndef,SatUndef]]{
-  def and(p: C1, q: C2) = ???
-
-  def or(p: C1, q: C2) = ???
-
-  def xor(p: C1, q: C2) = ???
-
-  def nand(p: C1, q: C2) = ???
-
-  def nor(p: C1, q: C2) = ???
-
-  def nxor(p: C1, q: C2) = ???
+object ChooseS{
+  implicit def conSS[V1, V2 >: V1, C1 <: ChooseS[V1], C2 <: ChooseS[V2]] = new ChooseConSS[V1,V2]
+  implicit def conSL[V, C1<: ChooseS[V], C2<: ChooseL] = new ChooseConLS[V]
+  implicit def conSC[V1, V2 >: V1, C1 <: ChooseS[V1], C2 <: Choose[V2]] = new ChooseConSC[V1,V2]
 }
 
-abstract class ChooseConDU[V1, V2 >: V1, C1 <: Choose[V1,_,SatUndef],C2 <: Choose[V2,_,SatUndef]]
-    extends Connective[C1,C2,Choose[V1,LimDef,SatUndef]]{
-  def and(p: C1, q: C2) = ???
-
-  def or(p: C1, q: C2) = ???
-
-  def xor(p: C1, q: C2) = ???
-
-  def nand(p: C1, q: C2) = ???
-
-  def nor(p: C1, q: C2) = ???
-
-  def nxor(p: C1, q: C2) = ???
+object ChooseL{
+  implicit def conLL[C1 <: ChooseL, C2 <: ChooseL] = ChooseConLL
+  implicit def conLS[V, C1<: ChooseL, C2<: ChooseS[V]] = new ChooseConLS[V]
+  implicit def conLC[V, C1 <: ChooseL, C2 <: Choose[V]] = new ChooseConLC[V]
 }
 
-abstract class ChooseConUD[V1, V2 >: V1, C1 <: Choose[V1,LimUndef,_],C2 <: Choose[V2,LimUndef,_]]
-    extends Connective[C1,C2,Choose[V1,LimUndef,SatDef]]{
-  def and(p: C1, q: C2) = ???
+object ChooseConLL extends Connective[ChooseL,ChooseL,ChooseL]{
+  def and(p: ChooseL, q: ChooseL) = new ChooseL {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
 
-  def or(p: C1, q: C2) = ???
+  def or(p: ChooseL, q: ChooseL) = new ChooseL {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
 
-  def xor(p: C1, q: C2) = ???
+  def xor(p: ChooseL, q: ChooseL) = new ChooseL {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
 
-  def nand(p: C1, q: C2) = ???
+  def nand(p: ChooseL, q: ChooseL) = new ChooseL {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
 
-  def nor(p: C1, q: C2) = ???
+  def nor(p: ChooseL, q: ChooseL) = new ChooseL {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
 
-  def nxor(p: C1, q: C2) = ???
+  def nxor(p: ChooseL, q: ChooseL) = new ChooseL {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
 }
 
-abstract class ChooseConDD[V1, V2 >: V1, C1 <: Choose[V1,_,_],C2 <: Choose[V2,_,_]]
-    extends Connective[C1,C2,Choose[V1,LimDef,SatDef]]{
-  def and(p: C1, q: C2) = ???
+class ChooseConSS[V1, V2 >: V1] extends Connective[ChooseS[V1],ChooseS[V2],ChooseS[V1]]{
+  def and(p: ChooseS[V1], q: ChooseS[V2]) = new ChooseS[V1] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
 
-  def or(p: C1, q: C2) = ???
+  def or(p: ChooseS[V1], q: ChooseS[V2]) = new ChooseS[V1] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
 
-  def xor(p: C1, q: C2) = ???
+  def xor(p: ChooseS[V1], q: ChooseS[V2]) = new ChooseS[V1] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
 
-  def nand(p: C1, q: C2) = ???
+  def nand(p: ChooseS[V1], q: ChooseS[V2]) = new ChooseS[V1] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
 
-  def nor(p: C1, q: C2) = ???
+  def nor(p: ChooseS[V1], q: ChooseS[V2]) = new ChooseS[V1] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
 
-  def nxor(p: C1, q: C2) = ???
+  def nxor(p: ChooseS[V1], q: ChooseS[V2]) = new ChooseS[V1] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConLS[V] extends Connective[ChooseL,ChooseS[V],Choose[V]]{
+  def and(p: ChooseL, q: ChooseS[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: ChooseL, q: ChooseS[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: ChooseL, q: ChooseS[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: ChooseL, q: ChooseS[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: ChooseL, q: ChooseS[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: ChooseL, q: ChooseS[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConSL[V] extends Connective[ChooseS[V],ChooseL,Choose[V]]{
+  def and(p: ChooseS[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: ChooseS[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: ChooseS[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: ChooseS[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: ChooseS[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: ChooseS[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConCL[V] extends Connective[Choose[V],ChooseL,Choose[V]]{
+  def and(p: Choose[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: Choose[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: Choose[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: Choose[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: Choose[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: Choose[V], q: ChooseL) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConLC[V] extends Connective[ChooseL,Choose[V],Choose[V]]{
+  def and(p: ChooseL, q: Choose[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: ChooseL, q: Choose[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: ChooseL, q: Choose[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: ChooseL, q: Choose[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: ChooseL, q: Choose[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: ChooseL, q: Choose[V]) = new Choose[V] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConCS[V1,V2 >: V1] extends Connective[Choose[V1],ChooseS[V2],Choose[V1]]{
+  def and(p: Choose[V1], q: ChooseS[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: Choose[V1], q: ChooseS[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: Choose[V1], q: ChooseS[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: Choose[V1], q: ChooseS[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: Choose[V1], q: ChooseS[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: Choose[V1], q: ChooseS[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConSC[V1, V2 >: V1] extends Connective[ChooseS[V1],Choose[V2],Choose[V1]]{
+  def and(p: ChooseS[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: ChooseS[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: ChooseS[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: ChooseS[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: ChooseS[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: ChooseS[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+class ChooseConCC[V1, V2 >: V1] extends Connective[Choose[V1],Choose[V2],Choose[V1]]{
+  def and(p: Choose[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) and (q scheme)
+  }
+
+  def or(p: Choose[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) or (q scheme)
+  }
+
+  def xor(p: Choose[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) xor (q scheme)
+  }
+
+  def nand(p: Choose[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nand (q scheme)
+  }
+
+  def nor(p: Choose[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nor (q scheme)
+  }
+
+  def nxor(p: Choose[V1], q: Choose[V2]) = new Choose[V1] {
+     protected[choice] def scheme = (p scheme) nxor (q scheme)
+  }
+}
+
+//TODO: make implicit
+class ChooseSatisfy extends Conditional[ChooseL,Choose[_]]{
+  def condition[B](c: ChooseL, pred: B => Boolean) = new Choose[B]{
+    protected[choice] def scheme = (c scheme) compose (new AcceptIf[B](pred))
+  }
+}
+
+//TODO: make implicit
+abstract class ChooseLimit[V] extends Limit[V,ChooseS[V],Choose[V]]{
+  def every(c: ChooseS[V], n: Int) = new Choose[V]{
+    protected[choice] def scheme = (c scheme) andThen (new AcceptEvery(n))
+  }
+
+  def all(c: ChooseS[V]) = new Choose[V] {
+    protected[choice] def scheme = c scheme
+  }
+
+  def first(c: ChooseS[V], n: Int) = new Choose[V] {
+    protected[choice] def scheme = (c scheme) andThen (new AcceptFirst(n))
+  }
+
+  def exactly(c: ChooseS[V], n: Int) = new Choose[V] {
+    protected[choice] def scheme = (c scheme) andThen (new AcceptExactly(n))
+  }
 }

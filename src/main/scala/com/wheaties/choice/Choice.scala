@@ -1,5 +1,7 @@
 package com.wheaties.choice
 
+import com.wheaties.choice.iteration.IterationScheme
+
 //TODO: there's got to be a way to "partiion" things
 //TODO: this.type bad idea I think
 trait Choice[-Value]{

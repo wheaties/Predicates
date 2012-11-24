@@ -1,6 +1,7 @@
 package com.wheaties.choice
 
-import com.wheaties.choice.iteration.IterationScheme
+import com.wheaties.choice.setter.Setter
+import com.wheaties.choice.getter.Getter
 
 //TODO: there's got to be a way to "partiion" things
 //TODO: this.type bad idea I think
@@ -38,13 +39,7 @@ trait ChoiceL extends Choice[Any]{
   def once[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.once[B](this, pred)
 }
 
-trait Getter[A]{
-  def get(collection: A, scheme: IterationScheme): A
-}
 
-trait Setter[A,B]{
-  def set(collection: A, value: B, scheme: IterationScheme): A
-}
 
 ////should this be able to handle List[A],A=>B,List[B] as well as List[A],List[A]=>B,B? No! Don't need F[A=>B] yet.
 //trait Modder[In,Mapper,Out]{

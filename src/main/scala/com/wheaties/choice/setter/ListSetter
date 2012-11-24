@@ -1,0 +1,68 @@
+package com.wheaties.choice.setter
+
+import com.wheaties.choice.iteration.IterationScheme
+import scala.collection.mutable.MutableList
+
+abstract class ListSetter[A,B <: A] extends Setter[List[A],B]{
+  def set(collection: List[A], value: B, scheme: IterationScheme) ={
+    val builder = new MultableList[A]
+    val iter = collection toIterator
+    while(iter hasNext){
+      val next = iter next ()
+      if(scheme accept (next)) builder += value
+      else builder += next
+    }
+
+    builder toList
+  }
+}
+
+abstract class ListSetterC[A,B <: A, C[_] <: Iterable[_]] extends Setter[List[A],C[B]]{
+  def set(collection: List[A], value: C[B], scheme: IterationScheme) ={
+    val builder = new MultableList[A]
+    val iter = collection toIterator
+    val replaceIter = value toIterator
+    while(iter.hasNext && replaceIter.hasNext){
+      val next = iter next ()
+      if(scheme accept (next)){
+        val sub = replaceIter next ()
+        builder += sub
+      }
+      else builder += next
+    }
+
+    builder toList
+  }
+}
+
+abstract class MutableListSetter[A,B <: A] extends Setter[MutableList[A],B]{
+  def set(collection: List[A], value: B, scheme: IterationScheme) ={
+    val builder = new MultableList[A]
+    val iter = collection toIterator
+    while(iter hasNext){
+      val next = iter next ()
+      if(scheme accept (next)) builder += value
+      else builder += next
+    }
+
+    builder
+  }
+}
+
+abstract class MutableListSetterC[A,B <: A, C[_] <: Iterable[_]] extends Setter[MutableList[A],C[B]]{
+  def set(collection: List[A], value: C[B], scheme: IterationScheme) ={
+    val builder = new MultableList[A]
+    val iter = collection toIterator
+    val replaceIter = value toIterator
+    while(iter.hasNext && replaceIter.hasNext){
+      val next = iter next ()
+      if(scheme accept (next)){
+        val sub = replaceIter next ()
+        builder += sub
+      }
+      else builder += next
+    }
+
+    builder
+  }
+}

@@ -1,8 +1,10 @@
 package com.wheaties.choice.choose
 
-import com.wheaties.choice.{Setter, Getter, ChoiceS}
+import com.wheaties.choice.ChoiceS
 import com.wheaties.logical.PredicateLike
-import com.wheaties.choice.iteration.{AcceptIf, IterationScheme}
+import com.wheaties.choice.iteration.{AcceptOnce, AcceptUntil, AcceptIf, IterationScheme}
+import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.setter.Setter
 
 abstract class ChooseS[-V] extends ChoiceS[V] with PredicateLike[ChooseS[V]]{
   protected[choice] def scheme: IterationScheme
@@ -13,4 +15,12 @@ abstract class ChooseS[-V] extends ChoiceS[V] with PredicateLike[ChooseS[V]]{
 
 class ChooseIf[-V](pred: V => Boolean) extends ChooseS[V] with PredicateLike[ChooseS[V]]{
   protected[choice] def scheme = new AcceptIf[V](pred)
+}
+
+class ChooseUntil[-V](pred: V => Boolean) extends ChooseS[V] with PredicateLike[ChooseS[V]]{
+  protected[choice] def scheme = new AcceptUntil[V](pred)
+}
+
+class ChooseOnce[-V](pred: V => Boolean) extends ChooseS[V] with PredicateLike[ChooseS[V]]{
+  protected[choice] def scheme = new AcceptOnce[V](pred)
 }

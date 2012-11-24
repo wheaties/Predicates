@@ -1,8 +1,10 @@
 package com.wheaties.choice.choose
 
-import com.wheaties.choice.{Setter, Getter, ChoiceL}
+import com.wheaties.choice.ChoiceL
 import com.wheaties.logical.PredicateLike
-import com.wheaties.choice.iteration.{AcceptFirst, AcceptEvery, AcceptAll, IterationScheme}
+import com.wheaties.choice.iteration._
+import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.setter.Setter
 
 abstract class ChooseL extends ChoiceL with PredicateLike[ChooseL]{
   protected[choice] def scheme: IterationScheme
@@ -17,6 +19,10 @@ object ChooseAll extends ChooseL{
 
 class ChooseEvery(n: Int) extends ChooseL{
   protected[choice] def scheme = new AcceptEvery(n)
+}
+
+class ChooseEveryF(f: Int => Int, init: Int) extends ChooseL{
+  protected[choice] def scheme = new AcceptEveryF(f, init)
 }
 
 class ChooseFirst(n: Int) extends ChooseL{

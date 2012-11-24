@@ -1,8 +1,10 @@
 package com.wheaties.choice.ignore
 
-import com.wheaties.choice.{Setter, Getter, ChoiceS}
+import com.wheaties.choice.ChoiceS
 import com.wheaties.logical.{Not, PredicateLike}
-import com.wheaties.choice.iteration.{AcceptIf, IterationScheme}
+import com.wheaties.choice.iteration.{AcceptOnce, AcceptUntil, AcceptIf, IterationScheme}
+import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.setter.Setter
 
 abstract class IgnoreS[-V] extends ChoiceS[V] with PredicateLike[IgnoreS[V]]{
   protected[choice] def scheme: IterationScheme
@@ -13,4 +15,12 @@ abstract class IgnoreS[-V] extends ChoiceS[V] with PredicateLike[IgnoreS[V]]{
 
 class IgnoreIf[-V](pred: V => Boolean) extends IgnoreS[V] with PredicateLike[IgnoreS[V]]{
   protected[choice] def scheme = new AcceptIf[V](pred)
+}
+
+class IgnoreUntil[-V](pred: V => Boolean) extends IgnoreS[V] with PredicateLike[IgnoreS[V]]{
+  protected[choice] def scheme = new AcceptUntil[V](pred)
+}
+
+class IgnoreOnce[-V](pred: V => Boolean) extends IgnoreS[V] with PredicateLike[IgnoreS[V]]{
+  protected[choice] def scheme = new AcceptOnce[V](pred)
 }

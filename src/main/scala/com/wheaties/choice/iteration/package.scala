@@ -60,7 +60,7 @@ package object iteration{
         val pAcc = p accept(value)
         val qAcc = q accept(value)
 
-        if(pAcc)  qAcc else !qAcc
+        if(pAcc) qAcc else !qAcc
       }
     }
   }

@@ -24,16 +24,18 @@ trait Choice[-Value]{
 
 //This is a choice that already has a satisfiability condition, thus can't have another
 trait ChoiceS[-Value] extends Choice[Value]{
-  def every[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.every(this, n)
-  def all[Out](implicit limit: Limit[Value,this.type,Out]) = limit.all(this)
-  def first[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.first(this, n)
-  //def last[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.last(this, n)
-  def exactly[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit.exactly(this, n)
+  def every[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit every (this, n)
+  def all[Out](implicit limit: Limit[Value,this.type,Out]) = limit all (this)
+  def first[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit first (this, n)
+  //def last[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit last (this, n)
+  //def exactly[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit exactly (this, n)
 }
 
 //This is a Choice that already is limited, thus can't be limited again.
 trait ChoiceL extends Choice[Any]{
   def satisfying[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.condition[B](this, pred)
+  def until[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.until[B](this, pred)
+  def once[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.once[B](this, pred)
 }
 
 trait Getter[A]{
@@ -44,18 +46,7 @@ trait Setter[A,B]{
   def set(collection: A, value: B, scheme: IterationScheme): A
 }
 
+////should this be able to handle List[A],A=>B,List[B] as well as List[A],List[A]=>B,B? No! Don't need F[A=>B] yet.
 //trait Modder[In,Mapper,Out]{
 //  def mod(collection: In, f: Mapper): Out
 //}
-
-trait Limit[V, C <: ChoiceS[V], Out <: Choice[V]]{
-  def every(in: C, n: Int): Out
-  def all(in: C): Out
-  def first(in: C, n: Int): Out
-  //def last(in: C, n: Int): Out
-  def exactly(in: C, n: Int): Out
-}
-
-trait Conditional[C <: ChoiceL, Out <: Choice[_]]{
-  def condition[B](in: C, pred: B => Boolean): Out[B]
-}

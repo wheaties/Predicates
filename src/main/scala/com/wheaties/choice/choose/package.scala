@@ -17,7 +17,13 @@ package object choose {
 
   implicit def cond[C <: ChooseL] = new Conditional[ChooseL,Choose[_]]{
     def condition[B](c: ChooseL, pred: B => Boolean) = new Choose[B]{
-      protected[choice] def scheme = (c scheme) compose (new AcceptIf[B](pred))
+      protected[choice] def scheme = (c scheme) andThen (new AcceptIf[B](pred))
+    }
+    def until[B](c: ChooseL, pred: B => Boolean) = new Choose[B] {
+      protected[choice] def scheme = (c scheme) andThen (new AcceptUntil[B](pred))
+    }
+    def once[B](c: ChooseL, pred: B => Boolean) = new Choose[B] {
+      protected[choice] def scheme = (c scheme) andThen (new AcceptOnce[B](pred))
     }
   }
 
@@ -34,8 +40,8 @@ package object choose {
       protected[choice] def scheme = (c scheme) andThen (new AcceptFirst(n))
     }
 
-    def exactly(c: ChooseS[V], n: Int) = new Choose[V] {
-      protected[choice] def scheme = (c scheme) andThen (new AcceptExactly(n))
-    }
+    //def exactly(c: ChooseS[V], n: Int) = new Choose[V] {
+    //  protected[choice] def scheme = (c scheme) andThen (new AcceptExactly(n))
+    //}
   }
 }

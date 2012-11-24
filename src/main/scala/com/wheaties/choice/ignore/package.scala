@@ -17,7 +17,13 @@ package object ignore {
 
   implicit def cond[I <: IgnoreL] = new Conditional[IgnoreL,Ignore[_]]{
     def condition[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B]{
-      protected[choice] def scheme = (c scheme) compose (new AcceptIf[B](pred))
+      protected[choice] def scheme = (c scheme) andThen (new AcceptIf[B](pred))
+    }
+    def until[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B] {
+      protected[choice] def scheme = (c scheme) andThen (new AcceptUntil[B](pred))
+    }
+    def once[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B] {
+      protected[choice] def scheme = (c scheme) andThen (new AcceptOnce[B](pred))
     }
   }
 
@@ -34,8 +40,8 @@ package object ignore {
       protected[choice] def scheme = (c scheme) andThen (new AcceptFirst(n))
     }
 
-    def exactly(c: IgnoreS[V], n: Int) = new Ignore[V] {
-      protected[choice] def scheme = (c scheme) andThen (new AcceptExactly(n))
-    }
+    //def exactly(c: IgnoreS[V], n: Int) = new Ignore[V] {
+    //  protected[choice] def scheme = (c scheme) andThen (new AcceptExactly(n))
+    //}
   }
 }

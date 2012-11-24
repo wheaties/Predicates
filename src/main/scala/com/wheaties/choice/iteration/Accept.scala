@@ -15,6 +15,25 @@ class AcceptEvery(n: Int) extends IterationScheme{
   }
 }
 
+class AcceptEveryF(f: Int => Int, init: Int) extends IterationScheme{
+  require(init > 0)
+
+  private var step = init
+  private var current = 0
+
+  def accept[A](value: A) ={
+    current += 1
+    if(current == step){
+      step = f(step)
+
+      true
+    }
+    else{
+      false
+    }
+  }
+}
+
 class AcceptFirst(n: Int) extends IterationScheme{
   private var count = -1
 

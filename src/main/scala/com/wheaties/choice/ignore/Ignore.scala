@@ -1,8 +1,10 @@
 package com.wheaties.choice.ignore
 
-import com.wheaties.choice.{Getter, Setter, Choice}
+import com.wheaties.choice.Choice
 import com.wheaties.logical.{Not, PredicateLike}
 import com.wheaties.choice.iteration.IterationScheme
+import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.setter.Setter
 
 abstract class Ignore[-V] extends Choice[V] with PredicateLike[Ignore[V]]{
   protected[choice] def scheme: IterationScheme

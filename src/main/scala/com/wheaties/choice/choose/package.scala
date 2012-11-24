@@ -32,6 +32,10 @@ package object choose {
       protected[choice] def scheme = (c scheme) andThen (new AcceptEvery(n))
     }
 
+    def every(c: ChooseS[V], f: Int => Int, n: Int = 1) = new Choose[V] {
+      protected[choice] def scheme = (c scheme) andThen (new AcceptEveryF(f, n))
+    }
+
     def all(c: ChooseS[V]) = new Choose[V] {
       protected[choice] def scheme = c scheme
     }

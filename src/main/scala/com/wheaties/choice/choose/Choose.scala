@@ -1,8 +1,10 @@
 package com.wheaties.choice.choose
 
-import com.wheaties.choice.{Getter, Setter, Choice}
+import com.wheaties.choice.Choice
 import com.wheaties.logical.PredicateLike
 import com.wheaties.choice.iteration.IterationScheme
+import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.setter.Setter
 
 abstract class Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
   protected[choice] def scheme: IterationScheme

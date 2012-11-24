@@ -32,6 +32,10 @@ package object ignore {
       protected[choice] def scheme = (c scheme) andThen (new AcceptEvery(n))
     }
 
+    def every(c: IgnoreS[V], f: Int => Int, n: Int = 1) = new Ignore[V] {
+      protected[choice] def scheme = (c scheme) andThen (new AcceptEveryF(f, n))
+    }
+
     def all(c: IgnoreS[V]) = new Ignore[V] {
       protected[choice] def scheme = c scheme
     }

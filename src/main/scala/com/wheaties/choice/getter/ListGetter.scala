@@ -1,30 +1,30 @@
 package com.wheaties.choice.getter
 
-import com.wheaties.choice.iteration.IterationScheme
-import scala.collection.mutable.MutableList
+import scala.collection.mutable.{MutableList, DoubleLinkedList, LinkedList, ListBuffer}
 
-abstract class ListGetter[A] extends Getter[List[A]]{
-  def get(collection: List[A], scheme: IterationScheme) ={
-    val builder = new MultableList[A]
-    val iter = collection toIterator
-    while(iter hasNext){
-      val next = iter next ()
-      if(scheme accept (next)) builder += next
-    }
+//TODO: Queues will be handled in a different file.
 
-    builder toList
-  }
+abstract class ListGetter[A] extends BuildableGetter[A,List]{
+  def toIter(collection: List[A]) = collection toIterator
+  def builder = List.newBuilder[A]
 }
 
-abstract class MutableListGetter[A] extends Getter[MutableList[A]]{
-  def get(collection: MutableList[A], scheme: IterationScheme) ={
-    val result = new MutableList[A]
-    val iter = collection toIterator
-    while(iter hasNext){
-      val next = iter next ()
-      if(scheme accept (next)) result += next
-    }
+abstract class MutableListGetter[A] extends BuildableGetter[A,MutableList]{
+  def toIter(collection: MutableList[A]) = collection toIterator
+  def builder = new MutableList[A]
+}
 
-    result
-  }
+abstract class DoubleLinkedListGetter[A] extends BuildableGetter[A,DoubleLinkedList]{
+  def toIter(collection: DoubleLinkedList[A]) = collection toIterator
+  def builder = DoubleLinkedList.newBuilder[A]
+}
+
+abstract class LinkedListGetter[A] extends BuildableGetter[A,LinkedList]{
+  def toIter(collection: LinkedList[A]) = collection toIterator
+  def builder = LinkedList.newBuilder[A]
+}
+
+abstract class ListBufferGetter[A] extends BuildableGetter[A,ListBuffer]{
+  def toIter(collection: ListBuffer[A]) = collection toIterator
+  def builder = ListBuffer.newBuilder[A]
 }

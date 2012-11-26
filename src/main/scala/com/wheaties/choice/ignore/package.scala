@@ -15,7 +15,7 @@ package object ignore {
   implicit def conLS[V, I1<: IgnoreL, I2<: IgnoreS[V]] = new IgnoreConLS[V]
   implicit def conLC[V, I1 <: IgnoreL, I2 <: Ignore[V]] = new IgnoreConLC[V]
 
-  implicit def cond[I <: IgnoreL] = new Conditional[IgnoreL,Ignore[_]]{
+  implicit def cond[I <: IgnoreL] = new Conditional[IgnoreL,Ignore]{
     def condition[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B]{
       protected[choice] def scheme = (c scheme) andThen (new AcceptIf[B](pred))
     }

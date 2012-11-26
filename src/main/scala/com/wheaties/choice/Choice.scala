@@ -3,7 +3,7 @@ package com.wheaties.choice
 import com.wheaties.choice.setter.Setter
 import com.wheaties.choice.getter.Getter
 
-//TODO: there's got to be a way to "partiion" things
+//TODO: there's got to be a way to "partiion" things such that it composes...
 //TODO: this.type bad idea I think
 trait Choice[-Value]{
   self =>
@@ -42,6 +42,6 @@ trait ChoiceL extends Choice[Any]{
 
 
 ////should this be able to handle List[A],A=>B,List[B] as well as List[A],List[A]=>B,B? No! Don't need F[A=>B] yet.
-//trait Modder[In,Mapper,Out]{
-//  def mod(collection: In, f: Mapper): Out
+//trait Modder[In,Func,Out]{
+//  def mod(collection: In, f: Func): Out
 //}

@@ -15,7 +15,7 @@ package object choose {
   implicit def conLS[V, C1<: ChooseL, C2<: ChooseS[V]] = new ChooseConLS[V]
   implicit def conLC[V, C1 <: ChooseL, C2 <: Choose[V]] = new ChooseConLC[V]
 
-  implicit def cond[C <: ChooseL] = new Conditional[ChooseL,Choose[_]]{
+  implicit def cond[C <: ChooseL] = new Conditional[ChooseL,Choose]{
     def condition[B](c: ChooseL, pred: B => Boolean) = new Choose[B]{
       protected[choice] def scheme = (c scheme) andThen (new AcceptIf[B](pred))
     }

@@ -3,34 +3,32 @@ package com.wheaties.choice.getter
 import com.wheaties.choice.iteration.IterationScheme
 import com.scala.collection.mutable.Builder
 
-trait BuildableGetter[A,C[_]] extends Getter[C[A]]{
+trait IterableGetter[A,C[_] <: Iterable[_]] extends Getter[C[A]]{
   def get(collection: C[A], scheme: IterationScheme) ={
     val buffer = builder
-    val iter = toIter(collection)
+    val iter = collection toIterator
     while(iter hasNext){
       val next = iter next ()
-      if(scheme accept (next)) result += next
+      if(scheme accept (next)) buffer += next
     }
 
     buffer result ()
   }
 
-  def toIter(collection: C[A]): Iterator[A]
   def builder: Builder[A, C[A]]
 }
 
-trait BuildableGetter2[A,B,C[_,_]] extends Getter[C[A,B]]{
+trait IterableGetter2[A,B,C[_,_] <: Iterable[(_,_)]] extends Getter[C[A,B]]{
   def get(collection: C[A,B], scheme: IterationScheme) ={
     val buffer = builder
-    val iter = toIter(collection)
+    val iter = collection toIterator
     while(iter hasNext){
       val next = iter next ()
-      if(scheme accept (next)) result += next
+      if(scheme accept (next)) buffer += next
     }
 
     buffer result ()
   }
 
-  def toIter(collection: C[A,B]): Iterator[(A,B)]
   def builder: Builder[(A,B), C[A,B]]
 }

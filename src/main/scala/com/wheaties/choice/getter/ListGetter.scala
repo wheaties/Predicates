@@ -4,27 +4,22 @@ import scala.collection.mutable.{MutableList, DoubleLinkedList, LinkedList, List
 
 //TODO: Queues will be handled in a different file.
 
-abstract class ListGetter[A] extends BuildableGetter[A,List]{
-  def toIter(collection: List[A]) = collection toIterator
+abstract class ListGetter[A] extends IterableGetter[A,List]{
   def builder = List.newBuilder[A]
 }
 
-abstract class MutableListGetter[A] extends BuildableGetter[A,MutableList]{
-  def toIter(collection: MutableList[A]) = collection toIterator
+abstract class MutableListGetter[A] extends IterableGetter[A,MutableList]{
   def builder = new MutableList[A]
 }
 
-abstract class DoubleLinkedListGetter[A] extends BuildableGetter[A,DoubleLinkedList]{
-  def toIter(collection: DoubleLinkedList[A]) = collection toIterator
+abstract class DoubleLinkedListGetter[A] extends IterableGetter[A,DoubleLinkedList]{
   def builder = DoubleLinkedList.newBuilder[A]
 }
 
-abstract class LinkedListGetter[A] extends BuildableGetter[A,LinkedList]{
-  def toIter(collection: LinkedList[A]) = collection toIterator
+abstract class LinkedListGetter[A] extends IterableGetter[A,LinkedList]{
   def builder = LinkedList.newBuilder[A]
 }
 
-abstract class ListBufferGetter[A] extends BuildableGetter[A,ListBuffer]{
-  def toIter(collection: ListBuffer[A]) = collection toIterator
+abstract class ListBufferGetter[A] extends IterableGetter[A,ListBuffer]{
   def builder = ListBuffer.newBuilder[A]
 }

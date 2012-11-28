@@ -1,0 +1,78 @@
+package com.wheaties.choice.setter
+
+import com.wheaties.choice.iteration.IterationScheme
+import com.scala.collection.mutable.Builder
+
+trait IterableSetterR[A,B <: A,C[_] <: Iterable[_]] extends Setter[C[A],B]{
+  def set(collection: C[A], value: B, scheme: IterationScheme) ={
+    val buffer = builder
+    val iter = collection toIterator
+    while(iter hasNext){
+      val next = iter next ()
+      if(scheme accept (next)) buffer += value
+      else buffer += next
+    }
+
+    buffer result ()
+  }
+
+  def builder: Builder[A, C[A]]
+}
+
+trait IterableSetterR2[A,B,D <: B,C[_,_] <: Iterable[(_,_)]] extends Setter[C[A,B],D]{
+  def set(collection: C[A,B], value: D, scheme: IterationScheme) ={
+    val buffer = builder
+    val iter = collection toIterator
+    while(iter hasNext){
+      val next = iter next ()
+      if(scheme accept (next)) buffer += value
+      else buffer += next
+    }
+
+    buffer result ()
+  }
+
+  def builder: Builder[(A,B), C[A,B]]
+}
+
+trait IterableSetter[A,B <: A,C1[_]  <: Iterable[_],C2[_] <: Iterable[_]] extends Setter[C1[A],C2[B]]{
+  def set(collection: C1[A], value: C2[B], scheme: IterationScheme) ={
+    val buffer = builder
+    val iter = collection toIterator
+    val replaceIter = value toIterator
+    while(iter.hasNext && replaceIter.hasNext){
+      val next = iter next ()
+      if(scheme accept (next)){
+        buffer += replaceIter next ()
+      }
+      else{
+        buffer += next
+      }
+    }
+
+    buffer result ()
+  }
+
+  def builder: Builder[A, C1[A]]
+}
+
+trait IterableSetter[A,B,D <: B,C1[_,_] <: Iterable[(_,_)],C2[_,_] <: Iterable[(_,_)]] extends Setter[C1[A,B],C2[A,D]]{
+  def set(collection: C1[A,B], value: C2[A,D], scheme: IterationScheme) ={
+    val buffer = builder
+    val iter = collection toIterator
+    val replaceIter = value toIterator
+    while(iter.hasNext && replaceIter.hasNext){
+      val next = iter next ()
+      if(scheme accept (next)){
+        buffer += replaceIter next ()
+      }
+      else{
+        buffer += next
+      }
+    }
+
+    buffer result ()
+  }
+
+  def builder: Builder[(A,B), C1[A,B]]
+}

@@ -10,7 +10,7 @@ trait Choice[-Value]{
 
   def get[A](collection: A)(implicit getter: Getter[A]): A
   def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]): A
-  //def mod[A,B,C](collection: A, f: B)(implicit modifer: Modder[A,B,C]): C
+  //def mod[A,B](collection: A, f: B)(implicit setter: Setter[A,B]): A
 
   def compose[V <: Value](that: Choice[V]): Choice[V] = that andThen this
 
@@ -18,7 +18,7 @@ trait Choice[-Value]{
     def get[A](collection: A)(implicit getter: Getter[A]) = that get (self get (collection))
     def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = 
       self set(collection, that set (self get (collection), value))
-    //def mod[A,B,C](collection: A, f: B)(implicit modifer: Modder[A,B,C]) =
+    //def mod[A,B](collection: A, f: B)(implicit setter: Setter[A,B]) =
     //  self set(collection, that mod(self get (collection), f))
   }
 }
@@ -26,6 +26,7 @@ trait Choice[-Value]{
 //This is a choice that already has a satisfiability condition, thus can't have another
 trait ChoiceS[-Value] extends Choice[Value]{
   def every[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit every (this, n)
+  def every[Out](f: Int => Int, init: Int)(implicit limit: Limit[Value,this.type,Out]) = limit every (this, f, init)
   def all[Out](implicit limit: Limit[Value,this.type,Out]) = limit all (this)
   def first[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit first (this, n)
   //def last[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit last (this, n)

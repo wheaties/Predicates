@@ -29,7 +29,7 @@ trait IgnoreL extends ChoiceL with PredicateLike[IgnoreL]{
 
 object Ignore{
   def all() = new IgnoreL {
-    protected[choice] def scheme = new AcceptAll
+    protected[choice] def scheme = AcceptAll
   }
 
   def every(n: Int) = new IgnoreL {

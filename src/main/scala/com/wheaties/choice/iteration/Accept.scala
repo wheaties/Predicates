@@ -1,82 +1,53 @@
 package com.wheaties.choice.iteration
 
-class AcceptAll extends IterationScheme{
-  def accept[A](value: A) = true
+object AcceptAll extends IterationScheme{
+  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = true
+
+  def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = this
 }
 
+object AcceptNone extends IterationScheme{
+  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = false
+
+  def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = false
+}
+
+//TODO: think about how to lose all this mutable state but still remain GC friendly!
 class AcceptEvery(n: Int) extends IterationScheme{
-  private var step = -1
 
-  def accept[A](value: A) ={
-    step += 1
-    if(step == n) step = 0
+  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count % n == 0
 
-    step == 0
-  }
+  def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = this
 }
 
 class AcceptEveryF(f: Int => Int, init: Int) extends IterationScheme{
   require(init > 0)
 
-  private var step = init
-  private var current = 0
+  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count % init == 0
 
-  def accept[A](value: A) ={
-    current += 1
-    if(current == step){
-      step = f(step)
-
-      true
-    }
-    else{
-      false
-    }
-  }
+  def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = if(accept(value, count)) new AcceptEveryF[A](f, f(init))
 }
 
 class AcceptFirst(n: Int) extends IterationScheme{
-  private var count = -1
+  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count < n - 1
 
-  def accept[A](value: A) ={
-    count += 1
-
-    count < n
-  }
+  def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = this
 }
 
-//// This works for limiting up to but not over. It doesn't limit less than.
-//// throwing the exception here is bad. If composing two Choices with "and" condition, could cause problems.
-//class AcceptExactly(n: Int) extends IterationScheme{
-//  private var count = 0
-//
-//  def accept[A](value: A) ={
-//    count += 1
-//    if(n < count) throw new Exception("Exceeded acceptable limit of %s" format n)
-//
-//    true
-//  }
-//}
+class AcceptIf[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends IterationScheme{
+  def accept[B <: A](value: B, count: Int) = pred(value)
 
-class AcceptIf[B](pred: B => Boolean) extends IterationScheme{
-  def accept[A <: B](value: A) = pred(value)
+  def next[B <: A](value: B, count: Int) = this
 }
 
-class AcceptUntil[B](pred: B => Boolean) extends IterationScheme{
-  private var accepted = true
+class AcceptUntil[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends IterationScheme{
+  def accept[B <: A](value: A, count: Int) = pred(value)
 
-  def accept[A <: B](value: A) ={
-    if(accepted && pred(value)) accepted = false
-
-    accepted
-  }
+  def next[B <: A](value: B, count: Int) = if(accept(value, count)) AcceptNone else this
 }
 
-class AcceptOnce[B](pred: B => Boolean) extends IterationScheme{
-  private var accepted = false
+class AcceptOnce[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends IterationScheme{
+  def accept[B <: A](value: B, count: Int) = pred(value)
 
-  def accept[A <: B](value: A) ={
-    if(!accepted && pred(value)) accepted = true
-
-    accepted
-  }
+  def next[B <: A](value: B, count: Int) = if(accept(value, count)) AcceptAll else this
 }

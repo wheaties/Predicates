@@ -5,7 +5,7 @@ import com.wheaties.choice.iteration.IterationScheme
 abstract class ArrayGetter[A : ClassManifest] extends Getter[Array[A]]{
   def get(collection: Array[A], scheme: IterationScheme) ={
     val buffer = Array.newBuilder[A]
-    for(indx <- 0 to collection.length){
+    for(indx <- 0 until collection.length){
       if(scheme accept (collection[indx])) buffer += collection[indx]
     }
 
@@ -13,6 +13,6 @@ abstract class ArrayGetter[A : ClassManifest] extends Getter[Array[A]]{
   }
 }
 
-abstract class WrappedArrayGetter[A] extends IterableGetter[A,WrappedArray]{
+abstract class WrappedArrayGetter[A] extends IterableGetter[A,WrappedArray[A]]{
   def builder = WrappedArray.newBuilder[A]
 }

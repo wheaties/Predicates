@@ -17,23 +17,23 @@ package object ignore {
 
   implicit def cond[I <: IgnoreL] = new Conditional[IgnoreL,Ignore]{
     def condition[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B]{
-      protected[choice] def scheme = (c scheme) andThen (new AcceptIf[B](pred))
+      protected[choice] def scheme = (c scheme) and (new AcceptIf[B](pred))
     }
     def until[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B] {
-      protected[choice] def scheme = (c scheme) andThen (new AcceptUntil[B](pred))
+      protected[choice] def scheme = (c scheme) and (new AcceptUntil[B](pred))
     }
     def once[B](c: IgnoreL, pred: B => Boolean) = new Ignore[B] {
-      protected[choice] def scheme = (c scheme) andThen (new AcceptOnce[B](pred))
+      protected[choice] def scheme = (c scheme) and (new AcceptOnce[B](pred))
     }
   }
 
   implicit def limit[V] = new Limit[V,IgnoreS[V],Ignore[V]]{
     def every(c: IgnoreS[V], n: Int) = new Ignore[V]{
-      protected[choice] def scheme = (c scheme) andThen (new AcceptEvery(n))
+      protected[choice] def scheme = (c scheme) and (new AcceptEvery(n))
     }
 
     def every(c: IgnoreS[V], f: Int => Int, n: Int = 1) = new Ignore[V] {
-      protected[choice] def scheme = (c scheme) andThen (new AcceptEveryF(f, n))
+      protected[choice] def scheme = (c scheme) and (new AcceptEveryF(f, n))
     }
 
     def all(c: IgnoreS[V]) = new Ignore[V] {
@@ -41,7 +41,7 @@ package object ignore {
     }
 
     def first(c: IgnoreS[V], n: Int) = new Ignore[V] {
-      protected[choice] def scheme = (c scheme) andThen (new AcceptFirst(n))
+      protected[choice] def scheme = (c scheme) and (new AcceptFirst(n))
     }
 
     //def exactly(c: IgnoreS[V], n: Int) = new Ignore[V] {

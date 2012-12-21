@@ -2,10 +2,8 @@ package com.wheaties.choice.iteration
 
 import com.wheaties.logical.{Connective, Not, Negation, PredicateLike}
 
-//TODO: Think about how to do "last" and "exactly" strategies.
+//TODO: want first(n) satisfying(pred) to be "counted" up only when satisfying that condition, no?
 trait IterationScheme extends PredicateLike[IterationScheme]{
-  self =>
-
   def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int): Boolean
 
   def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int): IterationScheme = this
@@ -67,7 +65,7 @@ trait IterationScheme extends PredicateLike[IterationScheme]{
   }
 }
 
-abstract class ReplacingScheme extends IterationScheme{
+trait ReplacingScheme extends IterationScheme{
   override def next[@specialized(Int, Long, Float, Double) A](value: A, count: Int) =
     if(accept(value, count)) replace else this
 

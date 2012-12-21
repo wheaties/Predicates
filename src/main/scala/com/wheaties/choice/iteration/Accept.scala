@@ -67,3 +67,10 @@ class AcceptOnceState[@specialized(Int, Long, Float, Double) -A](pred: (A,A) => 
 
   override def next[B <:A](value: B, count: Int) = if(pred(prev, value)) AcceptAll else new AcceptOnceState[A](pred, value)
 }
+
+class AcceptFirstState(n: Int, current: Int = 0) extends ReplacingScheme{
+  def accept[A](value: A, count: Int) = current < n
+
+  def replace = new AcceptFirstState(n, current + 1)
+}
+

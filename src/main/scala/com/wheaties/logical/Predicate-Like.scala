@@ -1,13 +1,14 @@
 package com.wheaties.logical
 
-//TODO: this.type? Doesn't seem like a good solution to me.
 trait PredicateLike[A]{
-  def and[B,Res](that: B)(implicit con: Connective[this.type,B,Res]): Res = con.and(this, that)
-  def or[B,Res](that: B)(implicit con: Connective[this.type,B,Res]): Res = con.or(this, that)
-  def xor[B,Res](that: B)(implicit con: Connective[this.type,B,Res]): Res = con.xor(this, that)
-  def nand[B,Res](that: B)(implicit con: Connective[this.type,B,Res]): Res = con.nand(this, that)
-  def nor[B,Res](that: B)(implicit con: Connective[this.type,B,Res]): Res = con.nor(this, that)
-  def nxor[B,Res](that: B)(implicit con: Connective[this.type,B,Res]): Res = con.nxor(this, that)
+  self: A =>
+
+  def and[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.and(this, that)
+  def or[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.or(this, that)
+  def xor[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.xor(this, that)
+  def nand[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.nand(this, that)
+  def nor[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.nor(this, that)
+  def nxor[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.nxor(this, that)
 }
 
 trait Connective[A,B,Res]{

@@ -3,8 +3,7 @@ package com.wheaties.choice
 import com.wheaties.choice.setter.Setter
 import com.wheaties.choice.getter.Getter
 
-//TODO: there's got to be a way to "partiion" things such that it composes...
-//TODO: this.type bad idea I think
+//TODO: there's got to be a way to "partiion" things such that it composes without going to great lengths...
 trait Choice[-Value]{
   self =>
 
@@ -22,25 +21,6 @@ trait Choice[-Value]{
     //  self set(collection, that mod(self get (collection), f))
   }
 }
-
-//This is a choice that already has a satisfiability condition, thus can't have another
-trait ChoiceS[-Value] extends Choice[Value]{
-  def every[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit every (this, n)
-  def every[Out](f: Int => Int, init: Int)(implicit limit: Limit[Value,this.type,Out]) = limit every (this, f, init)
-  def all[Out](implicit limit: Limit[Value,this.type,Out]) = limit all (this)
-  def first[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit first (this, n)
-  //def last[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit last (this, n)
-  //def exactly[Out](n: Int)(implicit limit: Limit[Value,this.type,Out]) = limit exactly (this, n)
-}
-
-//This is a Choice that already is limited, thus can't be limited again.
-trait ChoiceL extends Choice[Any]{
-  def satisfying[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.condition[B](this, pred)
-  def until[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.until[B](this, pred)
-  def once[B,Out](pred: B => Boolean)(implicit cond: Conditional[this.type,Out]) = cond.once[B](this, pred)
-}
-
-
 
 ////should this be able to handle List[A],A=>B,List[B] as well as List[A],List[A]=>B,B? No! Don't need F[A=>B] yet.
 //trait Modder[In,Func,Out]{

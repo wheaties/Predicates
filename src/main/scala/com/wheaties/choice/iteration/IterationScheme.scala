@@ -2,6 +2,17 @@ package com.wheaties.choice.iteration
 
 import com.wheaties.logical.{Connective, Not, Negation, PredicateLike}
 
+/**
+ * The whole scheme of a predicate composeable object that avoids high GC overhead while at the same time is not
+ * mutable is something that I've struggled to represent. To grab the highest level of efficiency I need to use a
+ * mutable accumulator of previous state. I don't like putting in mutable state unless it's within a self-contained
+ * function and can never "leak" out. I'm going to violate this in the design of Choices.
+ *
+ * TODO: Restrict these to be only accessible to the "choice" package.
+ * TODO: add in counting as a mutable field
+ * TODO: redefine the Connectives so each accept is called, as expensive as that is
+ */
+
 //TODO: want first(n) satisfying(pred) to be "counted" up only when satisfying that condition, no?
 trait IterationScheme extends PredicateLike[IterationScheme]{
   def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int): Boolean

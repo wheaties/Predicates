@@ -11,6 +11,7 @@ trait PredicateLike[A]{
   def nxor[B,Res](that: B)(implicit con: Connective[A,B,Res]): Res = con.nxor(this, that)
 }
 
+//Perhaps this should be typed to And, Or and Xor. Then use negation for nand, nor, and nxor?
 trait Connective[A,B,Res]{
   def and(p: A, q: B): Res
   def or(p: A, q: B): Res

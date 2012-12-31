@@ -2,29 +2,35 @@ package com.wheaties.choice
 
 import com.wheaties.choice.setter.Setter
 import com.wheaties.choice.getter.Getter
+import iteration.IterationScheme
+import com.wheaties.logical.{Not, Negation}
 
-//TODO: there's got to be a way to "partiion" things such that it composes without going to great lengths...
 //TODO: there's got to be a way to fold
 //TODO: there's got to be a way to reduce too!
 trait Choice[-Value]{
   self =>
 
-  def get[A](collection: A)(implicit getter: Getter[A]): A
-  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]): A
-  //def mod[A,B](collection: A, f: B)(implicit setter: Setter[A,B]): A
+  protected[choice] def scheme: IterationScheme
+  protected[choice] def iteration(iter: IterationScheme): IterationScheme
+
+  def get[A](collection: A)(implicit getter: Getter[A]) = getter get (collection, iteration(scheme))
+  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, iteration(scheme))
+  //def mod[A,B](collection: A, f: B)(implicit setter: Setter[A,B]) = setter mod (collection, f, iteration scheme)
+  def partition[A](collection: A)(implicit getter: Getter[A]) = getter partition (collection, iteration(scheme))
+  //def fold[A,B,C](collection: A, f: B)(implicit folder: Folder[A,B,C]) = folder fold (collection, f, iteration scheme)
+  //def reduce[A,B,C](collection: A, f: B)(implicit folder: Folder[A,B,C]) = folder reduce (collection, f, iteration scheme)
 
   def compose[V <: Value](that: Choice[V]): Choice[V] = that andThen this
 
   def andThen[V >: Value](that: Choice[V]): Choice[Value] = new Choice[Value]{
-    def get[A](collection: A)(implicit getter: Getter[A]) = that get (self get (collection))
-    def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = 
-      self set(collection, that set (self get (collection), value))
-    //def mod[A,B](collection: A, f: B)(implicit setter: Setter[A,B]) =
-    //  self set(collection, that mod(self get (collection), f))
+    protected[choice] def scheme = self iteration (self scheme) andThen (that iteration (that scheme))
+    protected[choice] def iteration(iter: IterationScheme) = iter
+  }
+
+  implicit def neg = new Negation[Choice[Value]] {
+    def not(that: Choice[Value]) = new Choice[Value] {
+      protected[choice] def scheme = Not(that scheme)
+      protected[choice] def iteration(iter: IterationScheme) = iter
+    }
   }
 }
-
-////should this be able to handle List[A],A=>B,List[B] as well as List[A],List[A]=>B,B? No! Don't need F[A=>B] yet.
-//trait Modder[In,Func,Out]{
-//  def mod(collection: In, f: Func): Out
-//}

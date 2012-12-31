@@ -1,18 +1,14 @@
-package com.wheaties.choice.ignore
+package com.wheaties.choice
 
-import com.wheaties.choice.Choice
-import com.wheaties.logical.{Connective, Not, PredicateLike}
-import com.wheaties.choice.iteration._
+import com.wheaties.logical.{Not, Connective, PredicateLike}
 import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.iteration._
 import com.wheaties.choice.setter.Setter
 
 trait Ignore[-V] extends Choice[V] with PredicateLike[Ignore[V]]{
   self =>
 
-  protected[choice] def scheme: IterationScheme
-
-  def get[A](collection: A)(implicit getter: Getter[A]) = getter get (collection, Not(scheme))
-  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, Not(scheme))
+  protected[choice] def iteration(iter: IterationScheme) = Not(iter)
 
   def every(n: Int) = new Ignore[V] {
     protected[choice] def scheme = (self scheme) andThen new AcceptEvery(n)

@@ -8,16 +8,25 @@ trait IterableGetter[BuildType, Collection <: Iterable[BuildType]] extends Gette
   def get(collection: Collection, scheme: IterationScheme) ={
     val buffer = builder
     val iter = collection toIterator
-    var current = scheme
-    var count = 1
     while(iter hasNext){
       val value = iter next ()
-      if(current accept (value, count)) buffer += value
-      current = scheme next (value, count)
-      count += 1
+      if(scheme accept (value)) buffer += value
     }
 
     buffer result ()
+  }
+
+  def partition(collection: Collection, scheme: IterationScheme) ={
+    val bufferLeft = builder
+    val bufferRight = builder
+    val iter = collection toIterator
+    while(iter hasNext){
+      val value = iter next ()
+      if(scheme accept (value)) bufferLeft += value
+      else bufferRight += value
+    }
+
+    (bufferLeft result (), bufferRight result ())
   }
 
   def builder: Builder[BuildType, Collection]

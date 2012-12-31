@@ -2,7 +2,7 @@ package com.wheaties.choice.setter
 
 import com.wheaties.choice.iteration.IterationScheme
 
-abstract class ArraySetter[A : ClassManifest,B <: A] extends Setter[Array[A], B]{
+abstract class ArraySetter[A : ClassManifest,B <: A : ClassManifest] extends Setter[Array[A], B]{
   def set(collection: Array[A], value: B, scheme: IterationScheme) ={
     val buffer = Array.newBuilder[A]
     for(indx <- 0 to collection.length){

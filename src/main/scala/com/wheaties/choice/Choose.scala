@@ -1,18 +1,14 @@
-package com.wheaties.choice.choose
+package com.wheaties.choice
 
-import com.wheaties.choice.{ChoiceL, ChoiceS, Choice}
 import com.wheaties.logical.{Connective, PredicateLike}
-import com.wheaties.choice.iteration._
 import com.wheaties.choice.getter.Getter
+import com.wheaties.choice.iteration._
 import com.wheaties.choice.setter.Setter
 
 trait Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
   self =>
 
-  protected[choice] def scheme: IterationScheme
-
-  def get[A](collection: A)(implicit getter: Getter[A]) = getter get (collection, scheme)
-  def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, scheme)
+  protected[choice] def iteration(iter: IterationScheme) = iter
 
   def every(n: Int) = new Choose[V] {
     protected[choice] def scheme = (self scheme) andThen new AcceptEvery(n)

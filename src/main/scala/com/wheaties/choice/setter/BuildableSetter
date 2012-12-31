@@ -7,14 +7,10 @@ trait IterableSetterR[BuildType, Collection <: Iterable[BuildType], ValueType] e
   def set(collection: Collection, value: ValueType, scheme: IterationScheme) ={
     val buffer = builder
     val iter = collection toIterator
-    var current = scheme
-    var count = 0
     while(iter hasNext){
-      count += 1
       val next = iter next ()
-      if(scheme accept (next, count)) buffer += value
+      if(scheme accept (next)) buffer += value
       else buffer += next
-      current = scheme next (value, count)
     }
 
     buffer result ()
@@ -29,15 +25,10 @@ trait IterableSetter[BuildType, ValueType, Collection <: Iterable[BuildType], Co
     val buffer = builder
     val iter = collection toIterator
     val replaceIter = value toIterator
-    var current = scheme
-    var count = 0
     while(iter.hasNext && replaceIter.hasNext){
-      count += 1
       val next = iter next ()
-      if(scheme accept (next, count)) buffer += replaceIter next ()
+      if(scheme accept (next)) buffer += replaceIter next ()
       else buffer += next
-
-      current = scheme next (value, count)
     }
 
     buffer result ()

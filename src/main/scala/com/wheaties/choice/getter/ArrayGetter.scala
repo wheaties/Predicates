@@ -11,6 +11,17 @@ abstract class ArrayGetter[A : ClassManifest] extends Getter[Array[A]]{
 
     buffer result ()
   }
+
+  def partition(collection: Array[A], scheme: IterationScheme) ={
+    val bufferLeft = Array.newBuilder[A]
+    val bufferRight = Array.newBuilder[A]
+    for(indx <- 0 until collection.length){
+      if(scheme accept (collection[indx])) bufferLeft += collection[indx]
+      else bufferRight += collection[indx]
+    }
+
+    (bufferLeft result (), bufferRight result ())
+  }
 }
 
 abstract class WrappedArrayGetter[A] extends IterableGetter[A,WrappedArray[A]]{

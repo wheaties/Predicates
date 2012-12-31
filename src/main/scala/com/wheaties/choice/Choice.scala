@@ -4,6 +4,8 @@ import com.wheaties.choice.setter.Setter
 import com.wheaties.choice.getter.Getter
 
 //TODO: there's got to be a way to "partiion" things such that it composes without going to great lengths...
+//TODO: there's got to be a way to fold
+//TODO: there's got to be a way to reduce too!
 trait Choice[-Value]{
   self =>
 

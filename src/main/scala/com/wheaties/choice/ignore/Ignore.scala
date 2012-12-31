@@ -15,27 +15,27 @@ trait Ignore[-V] extends Choice[V] with PredicateLike[Ignore[V]]{
   def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, Not(scheme))
 
   def every(n: Int) = new Ignore[V] {
-    protected[choice] def scheme = (self scheme) and new AcceptEvery(n)
+    protected[choice] def scheme = (self scheme) andThen new AcceptEvery(n)
   }
 
   def every(f: Int => Int, init: Int) = new Ignore[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptEveryF(f, init)
+    protected[choice] def scheme = (self scheme) andThen new AcceptEveryF(f, init)
   }
 
   def first(n: Int) = new Ignore[Any]{
-    protected[choice] def scheme = (self scheme) and new AcceptFirst(n)
+    protected[choice] def scheme = (self scheme) andThen new AcceptFirst(n)
   }
 
   def satisfying[V](pred: V => Boolean) = new Ignore[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptIf[V](pred)
+    protected[choice] def scheme = (self scheme) andThen new AcceptIf[V](pred)
   }
 
   def until[V](pred: V => Boolean) = new Ignore[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptUntil[V](pred)
+    protected[choice] def scheme = (self scheme) andThen new AcceptUntil[V](pred)
   }
 
   def once[V](pred: V => Boolean) = new Ignore[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptOnce[V](pred)
+    protected[choice] def scheme = (self scheme) andThen new AcceptOnce[V](pred)
   }
 
   protected[ignore] def con[V2 >: V] = new Connective[Ignore[V],Ignore[V2],Ignore[V]]{
@@ -66,7 +66,7 @@ trait Ignore[-V] extends Choice[V] with PredicateLike[Ignore[V]]{
 }
 
 object Ignore{
-  def all() = new Ignore[Any] {
+  def all = new Ignore[Any] {
     protected[choice] def scheme = AcceptAll
   }
 

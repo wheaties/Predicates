@@ -1,76 +1,79 @@
 package com.wheaties.choice.iteration
 
+import com.wheaties.predicate.Always1
+
 object AcceptAll extends IterationScheme{
-  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = true
+  protected[iteration] def check[@specialized(Int, Long, Float, Double) A](value: A) = true
 }
 
 object AcceptNone extends IterationScheme{
-  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = false
+  protected[iteration] def check[@specialized(Int, Long, Float, Double) A](value: A) = false
 }
 
 //Location based
 
 class AcceptEvery(n: Int) extends IterationScheme{
-  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count % n == 0
+  private var count = 0
+
+  protected[iteration] def check[@specialized(Int, Long, Float, Double) A](value: A) = count % n == 0
+  protected[iteration] override def next(){
+    count += 1
+  }
 }
 
-class AcceptEveryF(f: Int => Int, init: Int) extends ReplacingScheme{
+class AcceptEveryF(f: Int => Int, init: Int) extends IterationScheme{
   require(init > 0)
 
-  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count % init == 0
+  private var current = init
+  private var count = 0
 
-  def replace = new AcceptEveryF(f, f(init))
+  protected[iteration] def check[@specialized(Int, Long, Float, Double) A](value: A) = count % current == 0
+  protected[iteration] override def next(){
+    if(count % current == 0){
+      current = f(current)
+    }
+    count += 1
+  }
 }
 
 class AcceptFirst(n: Int) extends IterationScheme{
-  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count < n - 1
+  private var count = 0
+
+  protected[iteration] def check[@specialized(Int, Long, Float, Double) A](value: A) = count < n - 1
+  protected[iteration] override def next(){
+    count += 1
+  }
 }
 
 class AcceptAt(n: Int) extends IterationScheme{
-  def accept[@specialized(Int, Long, Float, Double) A](value: A, count: Int) = count == n
+  private var count = 0
+
+  def check[@specialized(Int, Long, Float, Double) A](value: A) = count == n
+  protected[iteration] override def next(){
+    count += 1
+  }
 }
 
 //With Predicate conditions
 
 class AcceptIf[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends IterationScheme{
-  def accept[B <: A](value: B, count: Int) = pred(value)
+  protected[iteration] def check[B <: A](value: B) = pred(value)
 }
 
-class AcceptUntil[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends ReplacingScheme{
-  def accept[B <: A](value: B, count: Int) = pred(value)
+class AcceptUntil[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends IterationScheme{
+  private var flag = pred
 
-  def replace = AcceptNone
+  protected[iteration] def check[B <: A](value: B) = !flag(value)
+  protected[iteration] override def next(){
+    flag = Always1 or pred
+  }
 }
 
-class AcceptOnce[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends ReplacingScheme{
-  def accept[B <: A](value: B, count: Int) = pred(value)
+class AcceptOnce[@specialized(Int, Long, Float, Double) -A](pred: A => Boolean) extends IterationScheme{
+  private var flag = pred
 
-  def replace = AcceptAll
+  protected[iteration] def check[B <: A](value: B, count: Int) = flag(value)
+  protected[iteration] override def next(){
+    flag = Always1 or pred
+  }
 }
-
-//Now we get into the part where it can be more stateful without breaking immutability
-
-class AcceptIfState[@specialized(Int, Long, Float, Double) -A](pred: (A,A) => Boolean, prev: A) extends IterationScheme{
-  def accept[B <: A](value: B, count: Int) = pred(prev, value)
-
-  override def next[B <:A](value: B, count: Int) = new AcceptIfState[A](pred, value)
-}
-
-class AcceptUntilState[@specialized(Int, Long, Float, Double) -A](pred: (A,A) => Boolean, prev: A) extends IterationScheme{
-  def accept[B <: A](value: B, count: Int) = pred(prev, value)
-
-  override def next[B <:A](value: B, count: Int) = if(pred(prev, value)) AcceptNone else new AcceptUntilState[A](pred, value)
-}
-
-class AcceptOnceState[@specialized(Int, Long, Float, Double) -A](pred: (A,A) => Boolean, prev: A) extends IterationScheme{
-  def accept[B <: A](value: B, count: Int) = pred(prev, value)
-
-  override def next[B <:A](value: B, count: Int) = if(pred(prev, value)) AcceptAll else new AcceptOnceState[A](pred, value)
-}
-
-class AcceptFirstState(n: Int, current: Int = 0) extends ReplacingScheme{
-  def accept[A](value: A, count: Int) = current < n
-
-  def replace = new AcceptFirstState(n, current + 1)
-}
-

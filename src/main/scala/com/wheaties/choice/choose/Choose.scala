@@ -15,27 +15,27 @@ trait Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
   def set[A,B](collection: A, value: B)(implicit setter: Setter[A,B]) = setter set (collection, value, scheme)
 
   def every(n: Int) = new Choose[V] {
-    protected[choice] def scheme = (self scheme) and new AcceptEvery(n)
+    protected[choice] def scheme = (self scheme) andThen new AcceptEvery(n)
   }
 
   def every(f: Int => Int, init: Int = 1) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptEveryF(f, init)
+    protected[choice] def scheme = (self scheme) andThen new AcceptEveryF(f, init)
   }
 
   def first(n: Int) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptFirst(n)
+    protected[choice] def scheme = (self scheme) andThen new AcceptFirst(n)
   }
 
   def satisfying[V2 <: V](pred: V2 => Boolean) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptIf[V2](pred)
+    protected[choice] def scheme = (self scheme) andThen new AcceptIf[V2](pred)
   }
 
   def until[V2 <: V](pred: V2 => Boolean) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptUntil[V2](pred)
+    protected[choice] def scheme = (self scheme) andThen new AcceptUntil[V2](pred)
   }
 
   def once[V2 <: V](pred: V2 => Boolean) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) and new AcceptOnce[V2](pred)
+    protected[choice] def scheme = (self scheme) andThen new AcceptOnce[V2](pred)
   }
 
   protected[choose] implicit def con[V2 >: V] = new Connective[Choose[V],Choose[V2],Choose[V]]{

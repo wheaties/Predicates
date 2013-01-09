@@ -1,5 +1,6 @@
 package com.wheaties.logical
 
+//And and or are not suggestive of not. Xor, nand, nor and nxor are suggestive that there can be negation.
 trait PredicateLike[A]{
   self: A =>
 

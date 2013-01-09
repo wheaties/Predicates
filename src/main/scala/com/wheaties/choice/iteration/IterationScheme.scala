@@ -3,10 +3,11 @@ package com.wheaties.choice.iteration
 import com.wheaties.logical.{Connective, Not, Negation, PredicateLike}
 
 /**
- * The whole scheme of a predicate composeable object that avoids high GC overhead while at the same time is not
+ * The whole scheme of a predicate composable object that avoids high GC overhead while at the same time is not
  * mutable is something that I've struggled to represent. To grab the highest level of efficiency I need to use a
  * mutable accumulator of previous state. I don't like putting in mutable state unless it's within a self-contained
- * function and can never "leak" out. I'm going to violate this in the design of Choices.
+ * function and can never "leak" out. I'm going to violate this in the design of Choices until I can figure out a
+ * more pure representation that doesn't place undo burdens on the garbage collector.
  *
  * TODO: Restrict these to be only accessible to the "choice" package.
  */
@@ -15,7 +16,7 @@ import com.wheaties.logical.{Connective, Not, Negation, PredicateLike}
 trait IterationScheme extends PredicateLike[IterationScheme]{
   self =>
 
-  def accept[@specialized(Int, Long, Float, Double) A](value: A) ={
+  final def accept[@specialized(Int, Long, Float, Double) A](value: A) ={
     val flag = check(value)
     if(flag) next()
     flag

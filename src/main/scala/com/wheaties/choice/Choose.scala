@@ -8,7 +8,7 @@ import com.wheaties.choice.setter.Setter
 trait Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
   self =>
 
-  protected[choice] def iteration(iter: IterationScheme) = iter
+  protected[choice] def iteration(iter: Accept[V]) = iter
 
   def every(n: Int) = new Choose[V] {
     protected[choice] def scheme = (self scheme) andThen new AcceptEvery(n)
@@ -22,42 +22,16 @@ trait Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
     protected[choice] def scheme = (self scheme) andThen new AcceptFirst(n)
   }
 
-  def satisfying[V2 <: V](pred: V2 => Boolean) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) andThen new AcceptIf[V2](pred)
+  def satisfying[V1 <: V](pred: V1 => Boolean) = new Choose[V1]{
+    protected[choice] def scheme = (self scheme) andThen new AcceptIf[V1](pred)
   }
 
-  def until[V2 <: V](pred: V2 => Boolean) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) andThen new AcceptUntil[V2](pred)
+  def until[V1 <: V](pred: V1 => Boolean) = new Choose[V1]{
+    protected[choice] def scheme = (self scheme) andThen new AcceptUntil[V1](pred)
   }
 
-  def once[V2 <: V](pred: V2 => Boolean) = new Choose[V]{
-    protected[choice] def scheme = (self scheme) andThen new AcceptOnce[V2](pred)
-  }
-
-  protected[choose] implicit def con[V2 >: V] = new Connective[Choose[V],Choose[V2],Choose[V]]{
-    def and(p: Choose[V], q: Choose[V2]) = new Choose[V] {
-      protected[choice] def scheme = (p scheme) and (q scheme)
-    }
-
-    def or(p: Choose[V], q: Choose[V2]) = new Choose[V] {
-      protected[choice] def scheme = (p scheme) or (q scheme)
-    }
-
-    def xor(p: Choose[V], q: Choose[V2]) = new Choose[V] {
-      protected[choice] def scheme = (p scheme) xor (q scheme)
-    }
-
-    def nand(p: Choose[V], q: Choose[V2]) = new Choose[V] {
-      protected[choice] def scheme = (p scheme) nand (q scheme)
-    }
-
-    def nor(p: Choose[V], q: Choose[V2]) = new Choose[V] {
-      protected[choice] def scheme = (p scheme) nor (q scheme)
-    }
-
-    def nxor(p: Choose[V], q: Choose[V2]) = new Choose[V] {
-      protected[choice] def scheme = (p scheme) nxor (q scheme)
-    }
+  def once[V1 <: V](pred: V1 => Boolean) = new Choose[V1]{
+    protected[choice] def scheme = (self scheme) andThen new AcceptOnce[V1](pred)
   }
 }
 
@@ -88,5 +62,31 @@ object Choose{
 
   def once[V](pred: V => Boolean) = new Choose[V]{
     protected[choice] def scheme = new AcceptOnce[V](pred)
+  }
+
+  protected[choice] implicit def con[V,V2 >: V] = new Connective[Choose[V],Choose[V2],Choose[V]]{
+    def and(p: Choose[V], q: Choose[V2]) = new Choose[V] {
+      protected[choice] def scheme = (p scheme) and (q scheme)
+    }
+
+    def or(p: Choose[V], q: Choose[V2]) = new Choose[V] {
+      protected[choice] def scheme = (p scheme) or (q scheme)
+    }
+
+    def xor(p: Choose[V], q: Choose[V2]) = new Choose[V] {
+      protected[choice] def scheme = (p scheme) xor (q scheme)
+    }
+
+    def nand(p: Choose[V], q: Choose[V2]) = new Choose[V] {
+      protected[choice] def scheme = (p scheme) nand (q scheme)
+    }
+
+    def nor(p: Choose[V], q: Choose[V2]) = new Choose[V] {
+      protected[choice] def scheme = (p scheme) nor (q scheme)
+    }
+
+    def nxor(p: Choose[V], q: Choose[V2]) = new Choose[V] {
+      protected[choice] def scheme = (p scheme) nxor (q scheme)
+    }
   }
 }

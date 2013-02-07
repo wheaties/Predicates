@@ -1,9 +1,7 @@
 package com.wheaties.choice
 
 import com.wheaties.logical.{Not, Connective, PredicateLike}
-import com.wheaties.choice.getter.Getter
 import com.wheaties.choice.iteration._
-import com.wheaties.choice.setter.Setter
 
 trait Ignore[-V] extends Choice[V] with PredicateLike[Ignore[V]]{
   self =>
@@ -18,7 +16,7 @@ trait Ignore[-V] extends Choice[V] with PredicateLike[Ignore[V]]{
     protected[choice] def scheme = (self scheme) andThen new AcceptEveryF(f, init)
   }
 
-  def first(n: Int) = new Ignore[Any]{
+  def first(n: Int) = new Ignore[V]{
     protected[choice] def scheme = (self scheme) andThen new AcceptFirst(n)
   }
 

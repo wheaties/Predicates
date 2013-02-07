@@ -1,9 +1,7 @@
 package com.wheaties.choice
 
 import com.wheaties.logical.{Connective, PredicateLike}
-import com.wheaties.choice.getter.Getter
 import com.wheaties.choice.iteration._
-import com.wheaties.choice.setter.Setter
 
 trait Choose[-V] extends Choice[V] with PredicateLike[Choose[V]]{
   self =>

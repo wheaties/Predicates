@@ -1,28 +1,56 @@
 package com.wheaties.choice.iteration
 
-trait Traverse[Elem,To,C[_]]
-    extends ((C[Elem],Accum[To,C[To]],Accum[To,C[To]],Accept[Elem]) => (Accum[To,C[To]],Accum[To,C[To]])){
-  def onTrue[A <: Elem](t: Elem => A): Traverse[Elem,A,C]
-  def onFalse[A <: Elem](f: Elem => A): Traverse[Elem,A,C]
-  def on[A](f: Elem => A, t: Elem => A): Traverse[Elem,A,C]
+trait Traverse[Elem,Collection] extends ((Collection,Accept[Elem]) => Collection){
+
+  def onTrue(t: Elem => Elem): Traverse[Elem,Collection]
+  def onFalse(f: Elem => Elem): Traverse[Elem,Collection]
+  def on(f: Elem => Elem, t: Elem => Elem): Traverse[Elem,Collection]
+
+  def apply(collection: Collection, accept: Accept[Elem]): Collection
 }
 
-//Do nothing accumulator for get, same acc for set, two different for partition
-case class TraverseIterable[Elem,C[_] <: Iterable[_]](t: Elem => Elem = identity[Elem], f: Elem => Elem = identity[Elem])
-    extends Traverse[Elem,Elem,C]{
-  def onTrue[To <: Elem](func: Elem => To) = copy(t = func)
-  def onFalse[To <: Elem](func: Elem => To) = copy(f = func)
-  def on[A](fFunc: Elem => A, tFunc: Elem => A): Traverse[Elem,A,C] = copy(t = tFunc, f = fFunc)
+trait TraverseImplicits{
+  implicit def traverseIter[Elem,C[Elem] <: Iterable[Elem]] = TraverseIterable()
+  implicit def traverseArray[Elem,A[Elem] <: Array[Elem]] = TraverseIterable()
 
-  def apply(collection: C[Elem], accTrue: Accum[Elem,C[Elem]], accFalse: Accum[Elem,C[Elem]], accept: Accept[Elem]) ={
-    val iter = collection.toIterator
-    while(iter hasNext){
-      val next = iter next ()
-      if(accept accept(next)) accTrue += t(next)
-      else accFalse += f(next)
+  case class TraverseIterable[Elem,C[Elem] <: Iterable[Elem]](t: Elem => Elem = identity[Elem] _,
+                                                              f: Elem => Elem = identity[Elem] _)
+      extends Traverse[Elem,C[Elem]]{
+    def onTrue(func: Elem => Elem) = copy(t = func)
+    def onFalse(func: Elem => Elem) = copy(f = func)
+    def on(fFunc: Elem => Elem, tFunc: Elem => Elem) = copy(t = tFunc, f = fFunc)
+
+    def apply(collection: C[Elem], accept: Accept[Elem]) ={
+      val acc = collection.companion.newBuilder[Elem]
+      val iter = collection.iterator
+      while(iter hasNext){
+        val next = iter next ()
+        if(accept accept(next)) acc += t(next)
+        else acc += f(next)
+      }
+
+      acc result ()
     }
+  }
 
-    (accTrue, accFalse)
+  case class TraverseArray[Elem : ClassManifest,
+                           A[Elem] <: Array[Elem]](t: Elem => Elem = identity[Elem] _,
+                                                   f: Elem => Elem = identity[Elem] _)
+    extends Traverse[Elem,A[Elem]]{
+    def onTrue(func: Elem => Elem) = copy(t = func)
+    def onFalse(func: Elem => Elem) = copy(f = func)
+    def on(fFunc: Elem => Elem, tFunc: Elem => Elem) = copy(t = tFunc, f = fFunc)
+
+    def apply(collection: A[Elem], accept: Accept[Elem]) ={
+      val acc = collection.companion.newBuilder[Elem]
+      val iter = collection.iterator
+      while(iter hasNext){
+        val next = iter next ()
+        if(accept accept(next)) acc += t(next)
+        else acc += f(next)
+      }
+
+      acc result ()
+    }
   }
 }
-

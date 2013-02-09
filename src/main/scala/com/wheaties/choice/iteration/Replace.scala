@@ -1,30 +1,37 @@
 package com.wheaties.choice.iteration
 
-//Really want
+//TODO: change to implicit object that creates functions
 
-trait Replace[-Elem,+To] extends (Elem => To)
-
-class ReplaceF[Elem,To](f: Elem => To) extends (Elem => To){
-  def apply(elem: Elem) = f(elem)
+trait Replace[Elem,+Action] extends (Elem => Elem){
+  def apply(elem: Elem): Elem
 }
 
-class SubValue[Elem,To <: Elem](value: To) extends Replace[Elem,To]{
+class Substitute[Elem](value: Elem) extends Replace[Elem,Elem]{
   def apply(elem: Elem) = value
 }
 
-class SubIterable[Elem,To <: Elem,I[_] <: Iterable[_]](value: I[To]) extends Replace[Elem,To]{
-  private val iter = value.toIterator
+class SubIterable[Elem,To,I[To] <: Iterable[Elem]](value: I[To]) extends Replace[Elem,I[To]]{
+  private val iter = value.iterator
+
   def apply(elem: Elem) = if(iter hasNext) iter next () else elem
 }
 
-class SubStream[Elem,To <: Elem,S[_] <: Stream[_]](var value: S[To]) extends Replace[Elem,To]{
+class SubStream[Elem,To,S[To] <: Stream[Elem]](var value: S[To]) extends Replace[Elem,S[To]]{
   def apply(elem: Elem) = value match{
-    case head :#: tail => value = tail; head
+    case head #:: tail => value = tail; head
     case _ => elem
   }
 }
 
-class SubArray[Elem, To <: Elem,Array[To]](value: Array[To]) extends Replace[Elem,To]{
-  private val iter = value.toIterator
+class SubArray[Elem : ClassManifest, To, A[To] <: Array[Elem]](value: A[To]) extends Replace[Elem,A[To]]{
+  private val iter = value.iterator
+
   def apply(elem: Elem) = if(iter hasNext) iter next () else elem
+}
+
+class SubKeys[Key, To, Value, C[To] <: Iterable[Key]](value: C[To])
+    extends Replace[(Key,Value),C[To]]{
+  private val iter = value.iterator
+
+  def apply(elem: (Key,Value)) = if(iter hasNext) (iter next (), elem._2) else elem
 }

@@ -1,69 +1,41 @@
 package com.wheaties.predicate
 
-trait Predicate5[-A, -B, -C, -D, -E] extends Function5[A, B, C, D, E, Boolean] {
-	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Or5(this, that)
-	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = OrNot5(this, that)
-	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = And5(this, that)
-	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = AndNot5(this, that)
-	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Xor5(this, that)
-	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Nxor5(this, that)
-	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Nand5(this, that)
-	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E](that: Predicate5[AA, BB, CC, DD, EE]) = Nor5(this, that)
+import com.wheaties.logical._
 
-	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E):Boolean
+trait Predicate5[T1, T2, T3, T4, T5] extends Function5[T1, T2, T3, T4, T5, Boolean]{
+	self =>
+
+	def or[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5](that: Function5[TT1, TT2, TT3, TT4, TT5, Boolean]) = new Predicate5[TT1, TT2, TT3, TT4, TT5]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5) = self(arg1, arg2, arg3, arg4, arg5) || that(arg1, arg2, arg3, arg4, arg5)
+	}
+	def and[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5](that: Function5[TT1, TT2, TT3, TT4, TT5, Boolean]) = new Predicate5[TT1, TT2, TT3, TT4, TT5]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5) = self(arg1, arg2, arg3, arg4, arg5) && that(arg1, arg2, arg3, arg4, arg5)
+	}
+	def xor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5](that: Function5[TT1, TT2, TT3, TT4, TT5, Boolean]) = new Predicate5[TT1, TT2, TT3, TT4, TT5]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5) = if(self(arg1, arg2, arg3, arg4, arg5)) !that(arg1, arg2, arg3, arg4, arg5) else that(arg1, arg2, arg3, arg4, arg5)
+	}
+	def nor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5](that: Function5[TT1, TT2, TT3, TT4, TT5, Boolean]) = new Predicate5[TT1, TT2, TT3, TT4, TT5]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5) = !(self(arg1, arg2, arg3, arg4, arg5) || that(arg1, arg2, arg3, arg4, arg5))
+	}
+	def nand[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5](that: Function5[TT1, TT2, TT3, TT4, TT5, Boolean]) = new Predicate5[TT1, TT2, TT3, TT4, TT5]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5) = !(self(arg1, arg2, arg3, arg4, arg5) && that(arg1, arg2, arg3, arg4, arg5))
+	}
+	def nxor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5](that: Function5[TT1, TT2, TT3, TT4, TT5, Boolean]) = new Predicate5[TT1, TT2, TT3, TT4, TT5]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5) = if(self(arg1, arg2, arg3, arg4, arg5)) that(arg1, arg2, arg3, arg4, arg5) else !that(arg1, arg2, arg3, arg4, arg5)
+	}
+	override def toString() = "<predicate5>"
+
 }
-
-trait CompoundPredicate5[-A,-B,-C,-D,-E] extends Predicate5[A,B,C,D,E]{
-  val pred1: Predicate5[A,B,C,D,E]
-  val pred2: Predicate5[A,B,C,D,E]
+object Predicate5{
+	implicit def not[T1, T2, T3, T4, T5] = new Negation[Predicate5[T1, T2, T3, T4, T5]]{
+		def not(pred: Predicate5[T1, T2, T3, T4, T5]) = new Predicate5[T1, T2, T3, T4, T5]{
+			def apply(arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5) = !pred(arg1, arg2, arg3, arg4, arg5)
+		}
+	}
 }
-
-object CompoundPredicate5{
-  def unapply[A,B,C,D,E](pred: CompoundPredicate5[A,B,C,D,E]):Option[(Predicate5[A,B,C,D,E], Predicate5[A,B,C,D,E])] = {
-    Some(pred.pred1, pred.pred2)
-  }
+object Always5 extends Predicate5[Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any) = true
 }
-
-case class Or5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = pred1(arg0, arg1, arg2, arg3, arg4) || pred2(arg0, arg1, arg2, arg3, arg4)
-}
-
-case class OrNot5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = pred1(arg0, arg1, arg2, arg3, arg4) || !pred2(arg0, arg1, arg2, arg3, arg4)
-}
-
-case class And5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = pred1(arg0, arg1, arg2, arg3, arg4) && pred2(arg0, arg1, arg2, arg3, arg4)
-}
-
-case class AndNot5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = pred1(arg0, arg1, arg2, arg3, arg4) && !pred2(arg0, arg1, arg2, arg3, arg4)
-}
-
-case class Xor5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = if(pred1(arg0, arg1, arg2, arg3, arg4)) !pred2(arg0, arg1, arg2, arg3, arg4) else pred2(arg0, arg1, arg2, arg3, arg4)
-}
-
-case class Nxor5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = if(pred1(arg0, arg1, arg2, arg3, arg4)) pred2(arg0, arg1, arg2, arg3, arg4) else !pred2(arg0, arg1, arg2, arg3, arg4)
-}
-
-case class Nand5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = !(pred1(arg0, arg1, arg2, arg3, arg4) && pred2(arg0, arg1, arg2, arg3, arg4))
-}
-
-case class Nor5[A,B,C,D,E](pred1: Predicate5[A,B,C,D,E], pred2: Predicate5[A,B,C,D,E]) extends CompoundPredicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = !(pred1(arg0, arg1, arg2, arg3, arg4) || pred2(arg0, arg1, arg2, arg3, arg4))
-}
-
-case class Not5[A,B,C,D,E](pred: Predicate5[A,B,C,D,E]) extends Predicate5[A,B,C,D,E]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E) = !pred(arg0, arg1, arg2, arg3, arg4)
-}
-
-case object Always5 extends Predicate5[Any,Any,Any,Any,Any]{
-  def apply(arg0: Any, arg1: Any, arg2: Any, arg3: Any, arg4: Any) = true
-}
-
-case object Never5 extends Predicate5[Any,Any,Any,Any,Any]{
-  def apply(arg0: Any, arg1: Any, arg2: Any, arg3: Any, arg4: Any) = false
+object Never5 extends Predicate5[Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any) = false
 }

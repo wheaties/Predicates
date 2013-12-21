@@ -1,70 +1,41 @@
 package com.wheaties.predicate
 
-trait Predicate6[-A, -B, -C, -D, -E, -F] extends Function6[A, B, C, D, E, F, Boolean] {
-	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Or6(this, that)
-	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = OrNot6(this, that)
-	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = And6(this, that)
-	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = AndNot6(this, that)
-	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Xor6(this, that)
-	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Nxor6(this, that)
-	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Nand6(this, that)
-	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F](that: Predicate6[AA, BB, CC, DD, EE, FF]) = Nor6(this, that)
+import com.wheaties.logical._
 
-	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F):Boolean
+trait Predicate6[T1, T2, T3, T4, T5, T6] extends Function6[T1, T2, T3, T4, T5, T6, Boolean]{
+	self =>
+
+	def or[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6](that: Function6[TT1, TT2, TT3, TT4, TT5, TT6, Boolean]) = new Predicate6[TT1, TT2, TT3, TT4, TT5, TT6]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6) = self(arg1, arg2, arg3, arg4, arg5, arg6) || that(arg1, arg2, arg3, arg4, arg5, arg6)
+	}
+	def and[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6](that: Function6[TT1, TT2, TT3, TT4, TT5, TT6, Boolean]) = new Predicate6[TT1, TT2, TT3, TT4, TT5, TT6]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6) = self(arg1, arg2, arg3, arg4, arg5, arg6) && that(arg1, arg2, arg3, arg4, arg5, arg6)
+	}
+	def xor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6](that: Function6[TT1, TT2, TT3, TT4, TT5, TT6, Boolean]) = new Predicate6[TT1, TT2, TT3, TT4, TT5, TT6]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6) = if(self(arg1, arg2, arg3, arg4, arg5, arg6)) !that(arg1, arg2, arg3, arg4, arg5, arg6) else that(arg1, arg2, arg3, arg4, arg5, arg6)
+	}
+	def nor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6](that: Function6[TT1, TT2, TT3, TT4, TT5, TT6, Boolean]) = new Predicate6[TT1, TT2, TT3, TT4, TT5, TT6]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6) = !(self(arg1, arg2, arg3, arg4, arg5, arg6) || that(arg1, arg2, arg3, arg4, arg5, arg6))
+	}
+	def nand[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6](that: Function6[TT1, TT2, TT3, TT4, TT5, TT6, Boolean]) = new Predicate6[TT1, TT2, TT3, TT4, TT5, TT6]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6) = !(self(arg1, arg2, arg3, arg4, arg5, arg6) && that(arg1, arg2, arg3, arg4, arg5, arg6))
+	}
+	def nxor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6](that: Function6[TT1, TT2, TT3, TT4, TT5, TT6, Boolean]) = new Predicate6[TT1, TT2, TT3, TT4, TT5, TT6]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6) = if(self(arg1, arg2, arg3, arg4, arg5, arg6)) that(arg1, arg2, arg3, arg4, arg5, arg6) else !that(arg1, arg2, arg3, arg4, arg5, arg6)
+	}
+	override def toString() = "<predicate6>"
+
 }
-
-
-trait CompoundPredicate6[-A,-B,-C,-D,-E,-F] extends Predicate6[A,B,C,D,E,F]{
-  val pred1: Predicate6[A,B,C,D,E,F]
-  val pred2: Predicate6[A,B,C,D,E,F]
+object Predicate6{
+	implicit def not[T1, T2, T3, T4, T5, T6] = new Negation[Predicate6[T1, T2, T3, T4, T5, T6]]{
+		def not(pred: Predicate6[T1, T2, T3, T4, T5, T6]) = new Predicate6[T1, T2, T3, T4, T5, T6]{
+			def apply(arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6) = !pred(arg1, arg2, arg3, arg4, arg5, arg6)
+		}
+	}
 }
-
-object CompoundPredicate6{
-  def unapply[A,B,C,D,E,F](pred: CompoundPredicate6[A,B,C,D,E,F]):Option[(Predicate6[A,B,C,D,E,F], Predicate6[A,B,C,D,E,F])] = {
-    Some(pred.pred1, pred.pred2)
-  }
+object Always6 extends Predicate6[Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any) = true
 }
-
-case class Or6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = pred1(arg0,arg1,arg2,arg3,arg4,arg5) || pred2(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case class OrNot6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = pred1(arg0,arg1,arg2,arg3,arg4,arg5) || !pred2(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case class And6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = pred1(arg0,arg1,arg2,arg3,arg4,arg5) && pred2(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case class AndNot6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = pred1(arg0,arg1,arg2,arg3,arg4,arg5) && !pred2(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case class Xor6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5) else pred2(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case class Nxor6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5)) pred2(arg0,arg1,arg2,arg3,arg4,arg5) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case class Nand6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5) && pred2(arg0,arg1,arg2,arg3,arg4,arg5))
-}
-
-case class Nor6[A,B,C,D,E,F](pred1: Predicate6[A,B,C,D,E,F], pred2: Predicate6[A,B,C,D,E,F]) extends CompoundPredicate6[A,B,C,D,E,F]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5) || pred1(arg0,arg1,arg2,arg3,arg4,arg5))
-}
-
-case class Not6[A,B,C,D,E,F](pred: Predicate6[A,B,C,D,E,F]) extends Predicate6[A,B,C,D,E,F]{
-  def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F) = !pred(arg0,arg1,arg2,arg3,arg4,arg5)
-}
-
-case object Always6 extends Predicate6[Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any, arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any) = true
-}
-
-case object Never6 extends Predicate6[Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any, arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any) = false
+object Never6 extends Predicate6[Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any) = false
 }

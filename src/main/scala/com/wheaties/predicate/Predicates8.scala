@@ -1,69 +1,41 @@
 package com.wheaties.predicate
 
-trait Predicate8[-A, -B, -C, -D, -E, -F, -G, -H] extends Function8[A, B, C, D, E, F, G, H, Boolean] {
-	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Or8(this, that)
-	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = OrNot8(this, that)
-	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = And8(this, that)
-	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = AndNot8(this, that)
-	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Xor8(this, that)
-	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Nxor8(this, that)
-	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Nand8(this, that)
-	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H](that: Predicate8[AA, BB, CC, DD, EE, FF, GG, HH]) = Nor8(this, that)
+import com.wheaties.logical._
 
-	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H):Boolean
+trait Predicate8[T1, T2, T3, T4, T5, T6, T7, T8] extends Function8[T1, T2, T3, T4, T5, T6, T7, T8, Boolean]{
+	self =>
+
+	def or[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8](that: Function8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, Boolean]) = new Predicate8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8) = self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) || that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+	}
+	def and[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8](that: Function8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, Boolean]) = new Predicate8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8) = self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) && that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+	}
+	def xor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8](that: Function8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, Boolean]) = new Predicate8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8) = if(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)) !that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) else that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+	}
+	def nor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8](that: Function8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, Boolean]) = new Predicate8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8) = !(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) || that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8))
+	}
+	def nand[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8](that: Function8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, Boolean]) = new Predicate8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8) = !(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) && that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8))
+	}
+	def nxor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8](that: Function8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, Boolean]) = new Predicate8[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8) = if(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)) that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) else !that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+	}
+	override def toString() = "<predicate8>"
+
 }
-
-trait CompoundPredicate8[A,B,C,D,E,F,G,H] extends Predicate8[A,B,C,D,E,F,G,H]{
-  val pred1: Predicate8[A,B,C,D,E,F,G,H]
-  val pred2: Predicate8[A,B,C,D,E,F,G,H]
+object Predicate8{
+	implicit def not[T1, T2, T3, T4, T5, T6, T7, T8] = new Negation[Predicate8[T1, T2, T3, T4, T5, T6, T7, T8]]{
+		def not(pred: Predicate8[T1, T2, T3, T4, T5, T6, T7, T8]) = new Predicate8[T1, T2, T3, T4, T5, T6, T7, T8]{
+			def apply(arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6, arg7: T7, arg8: T8) = !pred(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+		}
+	}
 }
-
-object CompoundPredicate8{
-  def unapply[A,B,C,D,E,F,G,H](pred: CompoundPredicate8[A,B,C,D,E,F,G,H]):Option[(Predicate8[A,B,C,D,E,F,G,H], Predicate8[A,B,C,D,E,F,G,H])] = {
-    Some(pred.pred1, pred.pred2)
-  }
+object Always8 extends Predicate8[Any,Any,Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any, arg7: Any, arg8: Any) = true
 }
-
-case class Or8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) || pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case class OrNot8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) || !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case class And8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) && pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case class AndNot8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) && !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case class Xor8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) else pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case class Nxor8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)) pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case class Nand8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) && pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7))
-}
-
-case class Nor8[A,B,C,D,E,F,G,H](pred1: Predicate8[A,B,C,D,E,F,G,H], pred2: Predicate8[A,B,C,D,E,F,G,H]) extends CompoundPredicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7) || pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7))
-}
-
-case class Not8[A,B,C,D,E,F,G,H](pred: Predicate8[A,B,C,D,E,F,G,H]) extends Predicate8[A,B,C,D,E,F,G,H]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H) = !pred(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-}
-
-case object Always8 extends Predicate8[Any,Any,Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any,arg1: Any,arg2: Any,arg3: Any,arg4: Any,arg5: Any,arg6: Any,arg7: Any) = true
-}
-
-case object Never8 extends Predicate8[Any,Any,Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any,arg1: Any,arg2: Any,arg3: Any,arg4: Any,arg5: Any,arg6: Any,arg7: Any) = false
+object Never8 extends Predicate8[Any,Any,Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any, arg7: Any, arg8: Any) = false
 }

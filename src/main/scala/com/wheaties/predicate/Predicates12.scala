@@ -1,69 +1,41 @@
 package com.wheaties.predicate
 
-trait Predicate12[-A, -B, -C, -D, -E, -F, -G, -H, -I, -J, -K, -L] extends Function12[A, B, C, D, E, F, G, H, I, J, K, L, Boolean] {
-	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = Or12(this, that)
-	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = OrNot12(this, that)
-	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = And12(this, that)
-	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = AndNot12(this, that)
-	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = Xor12(this, that)
-	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = Nxor12(this, that)
-	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = Nand12(this, that)
-	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G, HH <: H, II <: I, JJ <: J, KK <: K, LL <: L](that: Predicate12[AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, LL]) = Nor12(this, that)
+import com.wheaties.logical._
 
-	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G, arg7: H, arg8: I, arg9: J, arg10: K, arg11: L):Boolean
+trait Predicate12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12] extends Function12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, Boolean]{
+	self =>
+
+	def or[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8, TT9 <: T9, TT10 <: T10, TT11 <: T11, TT12 <: T12](that: Function12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, Boolean]) = new Predicate12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8, arg9: TT9, arg10: TT10, arg11: TT11, arg12: TT12) = self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) || that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+	}
+	def and[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8, TT9 <: T9, TT10 <: T10, TT11 <: T11, TT12 <: T12](that: Function12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, Boolean]) = new Predicate12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8, arg9: TT9, arg10: TT10, arg11: TT11, arg12: TT12) = self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) && that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+	}
+	def xor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8, TT9 <: T9, TT10 <: T10, TT11 <: T11, TT12 <: T12](that: Function12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, Boolean]) = new Predicate12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8, arg9: TT9, arg10: TT10, arg11: TT11, arg12: TT12) = if(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)) !that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) else that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+	}
+	def nor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8, TT9 <: T9, TT10 <: T10, TT11 <: T11, TT12 <: T12](that: Function12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, Boolean]) = new Predicate12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8, arg9: TT9, arg10: TT10, arg11: TT11, arg12: TT12) = !(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) || that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12))
+	}
+	def nand[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8, TT9 <: T9, TT10 <: T10, TT11 <: T11, TT12 <: T12](that: Function12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, Boolean]) = new Predicate12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8, arg9: TT9, arg10: TT10, arg11: TT11, arg12: TT12) = !(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) && that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12))
+	}
+	def nxor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7, TT8 <: T8, TT9 <: T9, TT10 <: T10, TT11 <: T11, TT12 <: T12](that: Function12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12, Boolean]) = new Predicate12[TT1, TT2, TT3, TT4, TT5, TT6, TT7, TT8, TT9, TT10, TT11, TT12]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7, arg8: TT8, arg9: TT9, arg10: TT10, arg11: TT11, arg12: TT12) = if(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)) that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) else !that(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+	}
+	override def toString() = "<predicate12>"
+
 }
-
-trait CompoundPredicate12[-A,-B,-C,-D,-E,-F,-G,-H,-I,-J,-K,-L] extends Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  val pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]
-  val pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]
+object Predicate12{
+	implicit def not[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12] = new Negation[Predicate12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12]]{
+		def not(pred: Predicate12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12]) = new Predicate12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12]{
+			def apply(arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6, arg7: T7, arg8: T8, arg9: T9, arg10: T10, arg11: T11, arg12: T12) = !pred(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+		}
+	}
 }
-
-object CompoundPredicate12{
-  def unapply[A,B,C,D,E,F,G,H,I,J,K,L](pred: CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]):Option[(Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], Predicate12[A,B,C,D,E,F,G,H,I,J,K,L])] = {
-    Some(pred.pred1, pred.pred2)
-  }
+object Always12 extends Predicate12[Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any, arg7: Any, arg8: Any, arg9: Any, arg10: Any, arg11: Any, arg12: Any) = true
 }
-
-case class Or12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) || pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case class OrNot12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) || !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case class And12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) && pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case class AndNot12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) && !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case class Xor12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) else pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case class Nxor12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)) pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case class Nand12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) && pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11))
-}
-
-case class Nor12[A,B,C,D,E,F,G,H,I,J,K,L](pred1: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L], pred2: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends CompoundPredicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11) || pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11))
-}
-
-case class Not12[A,B,C,D,E,F,G,H,I,J,K,L](pred: Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]) extends Predicate12[A,B,C,D,E,F,G,H,I,J,K,L]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G,arg7: H,arg8: I,arg9: J,arg10: K,arg11: L) = !pred(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
-}
-
-case object Always12 extends Predicate12[Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any,arg1: Any,arg2: Any,arg3: Any,arg4: Any,arg5: Any,arg6: Any,arg7: Any,arg8: Any,arg9: Any,arg10: Any,arg11: Any) = true
-}
-
-case object Never12 extends Predicate12[Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any,arg1: Any,arg2: Any,arg3: Any,arg4: Any,arg5: Any,arg6: Any,arg7: Any,arg8: Any,arg9: Any,arg10: Any,arg11: Any) = false
+object Never12 extends Predicate12[Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any, arg7: Any, arg8: Any, arg9: Any, arg10: Any, arg11: Any, arg12: Any) = false
 }

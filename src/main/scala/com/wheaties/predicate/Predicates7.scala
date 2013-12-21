@@ -1,69 +1,41 @@
 package com.wheaties.predicate
 
-trait Predicate7[-A, -B, -C, -D, -E, -F, -G] extends Function7[A, B, C, D, E, F, G, Boolean] {
-	def or[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Or7(this, that)
-	def orNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = OrNot7(this, that)
-	def and[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = And7(this, that)
-	def andNot[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = AndNot7(this, that)
-	def xor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Xor7(this, that)
-	def nxor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Nxor7(this, that)
-	def nand[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Nand7(this, that)
-	def nor[AA <: A, BB <: B, CC <: C, DD <: D, EE <: E, FF <: F, GG <: G](that: Predicate7[AA, BB, CC, DD, EE, FF, GG]) = Nor7(this, that)
+import com.wheaties.logical._
 
-	def apply(arg0: A, arg1: B, arg2: C, arg3: D, arg4: E, arg5: F, arg6: G):Boolean
+trait Predicate7[T1, T2, T3, T4, T5, T6, T7] extends Function7[T1, T2, T3, T4, T5, T6, T7, Boolean]{
+	self =>
+
+	def or[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7](that: Function7[TT1, TT2, TT3, TT4, TT5, TT6, TT7, Boolean]) = new Predicate7[TT1, TT2, TT3, TT4, TT5, TT6, TT7]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7) = self(arg1, arg2, arg3, arg4, arg5, arg6, arg7) || that(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+	}
+	def and[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7](that: Function7[TT1, TT2, TT3, TT4, TT5, TT6, TT7, Boolean]) = new Predicate7[TT1, TT2, TT3, TT4, TT5, TT6, TT7]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7) = self(arg1, arg2, arg3, arg4, arg5, arg6, arg7) && that(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+	}
+	def xor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7](that: Function7[TT1, TT2, TT3, TT4, TT5, TT6, TT7, Boolean]) = new Predicate7[TT1, TT2, TT3, TT4, TT5, TT6, TT7]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7) = if(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7)) !that(arg1, arg2, arg3, arg4, arg5, arg6, arg7) else that(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+	}
+	def nor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7](that: Function7[TT1, TT2, TT3, TT4, TT5, TT6, TT7, Boolean]) = new Predicate7[TT1, TT2, TT3, TT4, TT5, TT6, TT7]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7) = !(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7) || that(arg1, arg2, arg3, arg4, arg5, arg6, arg7))
+	}
+	def nand[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7](that: Function7[TT1, TT2, TT3, TT4, TT5, TT6, TT7, Boolean]) = new Predicate7[TT1, TT2, TT3, TT4, TT5, TT6, TT7]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7) = !(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7) && that(arg1, arg2, arg3, arg4, arg5, arg6, arg7))
+	}
+	def nxor[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, TT5 <: T5, TT6 <: T6, TT7 <: T7](that: Function7[TT1, TT2, TT3, TT4, TT5, TT6, TT7, Boolean]) = new Predicate7[TT1, TT2, TT3, TT4, TT5, TT6, TT7]{
+		def apply(arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, arg5: TT5, arg6: TT6, arg7: TT7) = if(self(arg1, arg2, arg3, arg4, arg5, arg6, arg7)) that(arg1, arg2, arg3, arg4, arg5, arg6, arg7) else !that(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+	}
+	override def toString() = "<predicate7>"
+
 }
-
-trait CompoundPredicate7[-A,-B,-C,-D,-E,-F,-G] extends Predicate7[A,B,C,D,E,F,G]{
-  val pred1: Predicate7[A,B,C,D,E,F,G]
-  val pred2: Predicate7[A,B,C,D,E,F,G]
+object Predicate7{
+	implicit def not[T1, T2, T3, T4, T5, T6, T7] = new Negation[Predicate7[T1, T2, T3, T4, T5, T6, T7]]{
+		def not(pred: Predicate7[T1, T2, T3, T4, T5, T6, T7]) = new Predicate7[T1, T2, T3, T4, T5, T6, T7]{
+			def apply(arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6, arg7: T7) = !pred(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+		}
+	}
 }
-
-object CompoundPredicate7{
-  def unapply[A,B,C,D,E,F,G](pred: CompoundPredicate7[A,B,C,D,E,F,G]):Option[(Predicate7[A,B,C,D,E,F,G], Predicate7[A,B,C,D,E,F,G])] = {
-    Some(pred.pred1, pred.pred2)
-  }
+object Always7 extends Predicate7[Any,Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any, arg7: Any) = true
 }
-
-case class Or7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6) || pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case class OrNot7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6) || !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case class And7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6) && pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case class AndNot7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6) && !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case class Xor7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6)) !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6) else pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case class Nxor7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = if(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6)) pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6) else !pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case class Nand7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6) && pred2(arg0,arg1,arg2,arg3,arg4,arg5,arg6))
-}
-
-case class Nor7[A,B,C,D,E,F,G](pred1: Predicate7[A,B,C,D,E,F,G], pred2: Predicate7[A,B,C,D,E,F,G]) extends CompoundPredicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = !(pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6) || pred1(arg0,arg1,arg2,arg3,arg4,arg5,arg6))
-}
-
-case class Not7[A,B,C,D,E,F,G](pred: Predicate7[A,B,C,D,E,F,G]) extends Predicate7[A,B,C,D,E,F,G]{
-  def apply(arg0: A,arg1: B,arg2: C,arg3: D,arg4: E,arg5: F,arg6: G) = !pred(arg0,arg1,arg2,arg3,arg4,arg5,arg6)
-}
-
-case object Always7 extends Predicate7[Any,Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any,arg1: Any,arg2: Any,arg3: Any,arg4: Any,arg5: Any,arg6: Any) = true
-}
-
-case object Never7 extends Predicate7[Any,Any,Any,Any,Any,Any,Any]{
-  def apply(arg0: Any,arg1: Any,arg2: Any,arg3: Any,arg4: Any,arg5: Any,arg6: Any) = false
+object Never7 extends Predicate7[Any,Any,Any,Any,Any,Any,Any]{
+	def apply(arg1: Any, arg2: Any, arg3: Any, arg4: Any, arg5: Any, arg6: Any, arg7: Any) = false
 }

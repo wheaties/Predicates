@@ -30,10 +30,10 @@ def named_func(name, func, num):
   that = under_types(num)
   args = arguments(num)
   bound_types = pred_types(num)
-  func_types = those[:]
+  func_types = that[:]
   func_types.append('Boolean')
 
-  typed_argu = ', '.join(typed_args(args, those))
+  typed_argu = ', '.join(typed_args(args, that))
   untyped_argu = ', '.join(args)
 
   bound_types_str = '[' + ', '.join(bound_types) + ']'
@@ -73,11 +73,11 @@ def pred_decl(num):
   func_types_str.append('Boolean')
   func_types_str = '[' + ', '.join(func_types_str) + ']'
 
-  return ''.join(['trait Predicate' ,str(num), pred_types_str, ' extends Function', func_types_str, '{\n', \
+  return ''.join(['trait Predicate' ,str(num), pred_types_str, ' extends Function', str(num), func_types_str, '{\n', \
                   '\tself =>\n\n', \
                   funcs, \
-                  '\n\toverride toString() = '<predicate', str(num), '>\n', \
-                  '\n}\n\n'])
+                  '\n\toverride def toString() = \"<predicate', str(num), '>\"\n', \
+                  '\n}'])
 
 def obj_decl(num):
   those = _types(num)
@@ -93,7 +93,7 @@ def obj_decl(num):
                   '\t\t\tdef apply(', typed_argu, ') = !pred(', args_str, ')\n',
                   '\t\t}\n', \
                   '\t}\n', \
-                  '}\n\n'])
+                  '}'])
 
 def always_decl(num):
   types = ['Any' for x in range(0,num)]
@@ -101,7 +101,7 @@ def always_decl(num):
   typed_argu = ', '.join(typed_args(args, types))
 
   return ''.join(['object Always', str(num), ' extends Predicate', str(num), '[', ','.join(types), ']{\n',
-                  '\tdef apply(', typed_argu, ') = true\n}\n'])
+                  '\tdef apply(', typed_argu, ') = true\n}'])
 
 def never_decl(num):
   types = ['Any' for x in range(0,num)]
@@ -109,7 +109,13 @@ def never_decl(num):
   typed_argu = ', '.join(typed_args(args, types))
 
   return ''.join(['object Never', str(num), ' extends Predicate', str(num), '[', ','.join(types), ']{\n',
-                  '\tdef apply(', typed_argu, ') = false\n}\n'])
+                  '\tdef apply(', typed_argu, ') = false\n}'])
 
 def create_all(num):
-  return '\n\n'.join([pred_decl(num), obj_decl(num), always_decl(num), never_decl(num)])
+  return '\n'.join(['package com.wheaties.predicate\n', 'import com.wheaties.logical._\n', pred_decl(num), obj_decl(num), always_decl(num), never_decl(num)])
+
+def create():
+  for num in range(0, 23):
+    ff = open('Predicates' + str(num) + '.scala', 'w')
+    ff.write(create_all(num))
+    ff.close()

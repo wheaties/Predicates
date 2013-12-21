@@ -14,28 +14,28 @@ trait Traverse[Elem,Collection]{
 
 trait TraverseIterable[Elem,Collection <: Iterable[Elem]] extends Traverse[Elem,Collection]{
 
-  def prune(collection: Collection, accept: Accept[Elem]) ={
+  def prune(collection: Collection, accept: Accept[Elem]): Collection ={
     val acc = builder
-    def onNext(next: Elem){ if(accept accept(next)) acc += t(next) }
-    traverse(collection, onNext)
+    def onNext(next: Elem){ if(accept accept(next)) acc += next }
+    collection foreach onNext
 
     acc result ()
   }
 
-  def replace(collection: Collection, f: Elem => Elem, accept: Accept[Elem]) ={
+  def replace(collection: Collection, f: Elem => Elem, accept: Accept[Elem]): Collection ={
     val acc = builder
     def onNext(next: Elem){ if(accept accept(next)) acc += f(next) else acc += next }
-    traverse(collection, onNext)
+    collection foreach onNext
 
     acc result ()
   }
 
-  def part(collection: Collection, accept: Accept[Elem]) ={
+  def part(collection: Collection, accept: Accept[Elem]): (Collection, Collection) ={
     val accTrue = builder
     val accFalse = builder
     def onNext(next: Elem){ if(accept accept(next)) accTrue += next else accFalse += next }
 
-    traverse(collection, onNext)
+    collection foreach onNext
 
     (accTrue result (), accFalse result ())
   }
@@ -52,30 +52,23 @@ trait TraverseIterable[Elem,Collection <: Iterable[Elem]] extends Traverse[Elem,
 //      else reduce(collection.tail, f, accept)
 //    }
 
-  protected def traverse(collection: Collection, action: Elem => Unit) ={
-    val iter = collection.iterator
-    while(iter hasNext){
-      action(iter next ())
-    }
-  }
-
   protected def builder: Builder[Elem,Collection]
 }
 
 trait TraverseImplicits{
-  implicit def list[Elem,List[Elem]]: Traverse[Elem,List[Elem]] = new TraverseIterable[Elem,List[Elem]] {
+  implicit def listTrav[Elem,List[Elem]]: Traverse[Elem,List[Elem]] = new TraverseIterable[Elem,List[Elem]] {
     protected def builder = List.newBuilder[Elem]
   }
 
-  implicit def set[Elem,Set[Elem]]: Traverse[Elem,Set[Elem]] = new TraverseIterable[Elem,Set[Elem]] {
+  implicit def setTrav[Elem,Set[Elem]]: Traverse[Elem,Set[Elem]] = new TraverseIterable[Elem,Set[Elem]] {
     protected def builder = Set.newBuilder[Elem]
   }
 
   implicit def traverseArray[Elem : ClassManifest,Array[Elem]] = new Traverse[Elem,Array[Elem]]{
-    def prune(collection: Array[Elem], accept: Accept[Elem]) ={
+    def prune(collection: Array[Elem], accept: Accept[Elem]): Array[Elem] ={
       val acc = Array.newBuilder[Elem]
-      def onNext(next: Elem){ if(accept accept(next)) acc += t(next) }
-      traverse(collection, onNext)
+      def onNext(next: Elem){ if(accept accept(next)) acc += next }
+      collection foreach onNext
 
       acc result ()
     }
@@ -83,7 +76,7 @@ trait TraverseImplicits{
     def replace(collection: Array[Elem], f: Elem => Elem, accept: Accept[Elem]) ={
       val acc = Array.newBuilder[Elem]
       def onNext(next: Elem){ if(accept accept(next)) acc += f(next) else acc += next }
-      traverse(collection, onNext)
+      collection foreach onNext
 
       acc result ()
     }
@@ -92,17 +85,9 @@ trait TraverseImplicits{
       val accTrue = Array.newBuilder[Elem]
       val accFalse = Array.newBuilder[Elem]
       def onNext(next: Elem){ if(accept accept(next)) accTrue += next else accFalse += next }
-      traverse(collection, onNext)
+      collection foreach onNext
 
       (accTrue result (), accFalse result ())
-    }
-
-    protected def traverse(collection: Array[Elem], action: Elem => Unit) ={
-      var index = 0
-      val count = collection.length
-      while(index < count){
-        action(collection(index))
-      }
     }
   }
 }

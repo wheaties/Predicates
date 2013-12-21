@@ -1,70 +1,52 @@
 package com.wheaties.predicate
 
-trait Predicate3[-A, -B, -C] extends Function3[A, B, C, Boolean] {
-	def or[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Or3(this, that)
-	def orNot[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = OrNot3(this, that)
-	def and[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = And3(this, that)
-	def andNot[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = AndNot3(this, that)
-	def xor[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Xor3(this, that)
-	def nxor[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Nxor3(this, that)
-	def nand[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Nand3(this, that)
-	def nor[AA <: A, BB <: B, CC <: C](that: Predicate3[AA, BB, CC]) = Nor3(this, that)
+import com.wheaties.logical.Negation
 
-	def apply(arg0: A, arg1: B, arg2: C):Boolean
+trait Predicate3[@specialized(Int,Long,Float,Double) -T1,
+                 @specialized(Int,Long,Float,Double) -T2,
+                 @specialized(Int,Long,Float,Double) -T3] extends Function3[T1, T2, T3, Boolean] {
+  self =>
+
+	def or[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = self(arg0, arg1, arg2) || that(arg0, arg1, arg2)
+  }
+	def orNot[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = self(arg0, arg1, arg2) || !that(arg0, arg1, arg2)
+  }
+	def and[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = self(arg0, arg1, arg2) && that(arg0, arg1, arg2)
+  }
+	def andNot[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = self(arg0, arg1, arg2) && !that(arg0, arg1, arg2)
+  }
+	def xor[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = if(self(arg0, arg1, arg2)) !that(arg0, arg1, arg2) else that(arg0, arg1, arg2)
+  }
+	def nxor[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = if(self(arg0, arg1, arg2)) that(arg0, arg1, arg2) else !that(arg0, arg1, arg2)
+  }
+	def nand[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = !(self(arg0, arg1, arg2) && that(arg0, arg1, arg2))
+  }
+	def nor[TT1 <: T1, TT2 <: T2, TT3 <: T3](that: Function3[TT1, TT2, TT3, Boolean]) = new Predicate3[TT1, TT2, TT3]{
+    def apply(arg0: TT1, arg1: TT2, arg2: TT3) = !(self(arg0, arg1, arg2) || that(arg0, arg1, arg2))
+  }
+
+  override def toString() = "<predicate3>"
 }
 
-
-trait CompoundPredicate3[-A,-B,-C] extends Predicate3[A,B,C]{
-val pred1: Predicate3[A,B,C]
-val pred2: Predicate3[A,B,C]
-}
-
-object CompoundPredicate3{
-  def unapply[A,B,C](pred: CompoundPredicate3[A,B,C]):Option[(Predicate3[A,B,C], Predicate3[A,B,C])] = {
-    Some(pred.pred1, pred.pred2)
+object Predicate3{
+  implicit def not[T1, T2, T3] = new Negation[Predicate3[T1, T2, T3]]{
+    def not(pred: Predicate3[T1, T2, T3]) = new Predicate3[T1, T2, T3]{
+      def apply(arg1: T1, arg2: T2, arg3: T3) = !pred(arg1, arg2, arg3)
+    }
   }
 }
 
-case class Or3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = pred1(arg0, arg1, arg2) || pred2(arg0, arg1, arg2)
-}
-
-case class OrNot3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = pred1(arg0, arg1, arg2) || !pred2(arg0, arg1, arg2)
-}
-
-case class And3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = pred1(arg0, arg1, arg2) && pred2(arg0, arg1, arg2)
-}
-
-case class AndNot3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = pred1(arg0, arg1, arg2) && !pred2(arg0, arg1, arg2)
-}
-
-case class Xor3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = if(pred1(arg0, arg1, arg2)) !pred2(arg0, arg1, arg2) else pred2(arg0, arg1, arg2)
-}
-
-case class Nxor3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = if(pred1(arg0, arg1, arg2)) pred2(arg0, arg1, arg2) else !pred2(arg0, arg1, arg2)
-}
-
-case class Nand3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = !(pred1(arg0, arg1, arg2) && pred2(arg0, arg1, arg2))
-}
-
-case class Nor3[A,B,C](pred1: Predicate3[A,B,C], pred2: Predicate3[A,B,C]) extends CompoundPredicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = !(pred1(arg0, arg1, arg2) || pred2(arg0, arg1, arg2))
-}
-
-case class Not3[A,B,C](pred: Predicate3[A,B,C]) extends Predicate3[A,B,C]{
-  def apply(arg0: A, arg1: B, arg2: C) = !pred(arg0, arg1, arg2)
-}
-
-case object Always3 extends Predicate3[Any, Any, Any]{
+object Always3 extends Predicate3[Any, Any, Any]{
   def apply(arg0: Any, arg1: Any, arg2: Any) = true
 }
 
-case object Never3 extends Predicate3[Any, Any, Any]{
+object Never3 extends Predicate3[Any, Any, Any]{
   def apply(arg0: Any, arg1: Any, arg2: Any) = false
 }

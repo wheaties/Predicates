@@ -2,33 +2,56 @@ def covariant(x):
   return '-' + x
 
 def lower_bound(left, right):
- return left + ' >: ' + right
+ return left + ' <: ' + right
 
 def specialized(expr):
   return '@specialized(Int,Long,Float,Double) ' + expr
 
-def arguments(exprs):
-  return ['arg' + str(x) for x in range(0,len(exprs))]
+def arguments(num):
+  return ['arg' + str(x) for x in range(1,num+1)]
 
-def apply_decl(exprs):
-  def func_arg(tup):
-    return tup[1] + ': ' + tup[0]
+def _types(num):
+  return ['T' + str(x) for x in range(1, num+1)]
 
-  return 'def apply(' + ', '.join(map(func_arg, zip(exprs,arguments(exprs)))) + ')'
+def under_types(num):
+  return ['T' + x for x in _types(num)]
 
-def compound_decl(lexprs, rexprs, func_rel):
-  length = len(lexprs)
+def pred_types(num):
+  those = _types(num)
+  under = under_types(num)
 
-  return 'new CompoundPredicate' + str(length) + '(p, q){\n\t' + apply_decl(lexprs) + ' = ' + func_rel(', '.join(arguments(lexprs))) + '\n}'
+  return [lower_bound(x, y) for (x,y) in zip(under, those)]
+
+def typed_args(args, all_types):
+  return [x + ': ' + y for (x,y) in zip(args, all_types)]
+
+def named_func(name, func, num):
+  those = _types(num)
+  that = under_types(num)
+  args = arguments(num)
+  bound_types = pred_types(num)
+  func_types = those[:]
+  func_types.append('Boolean')
+
+  typed_argu = ', '.join(typed_args(args, those))
+  untyped_argu = ', '.join(args)
+
+  bound_types_str = '[' + ', '.join(bound_types) + ']'
+  func_types_str = '[' + ', '.join(func_types) + ']'
+  under_types_str = '[' + ', '.join(that) + ']'
+
+  return ''.join(['\tdef ', name, str(bound_types_str), '(that: Function', str(num), func_types_str, ') = new Predicate', str(num), under_types_str, '{\n', \
+                  '\t\tdef apply(', typed_argu, ') = ', func(untyped_argu), '\n', \
+                  '\t}'])
 
 def func_or(args):
-  return 'p(' + args + ') || q(' + args + ')'
+  return 'self(' + args + ') || that(' + args + ')'
 
 def func_and(args):
-  return 'p(' + args + ') && q(' + args + ')'
+  return 'self(' + args + ') && that(' + args + ')'
 
 def func_xor(args):
-  return 'if(p(' + args + ')) !q(' + args + ') else q(' + args + ')'
+  return 'if(self(' + args + ')) !that(' + args + ') else that(' + args + ')'
 
 def func_nor(args):
   return '!(' + func_or(args) + ')'
@@ -37,62 +60,56 @@ def func_nand(args):
   return '!(' + func_and(args) + ')'
 
 def func_nxor(args):
-  return 'if(p(' + args + ')) q(' + args + ') else !q(' + args + ')'
+  return 'if(self(' + args + ')) that(' + args + ') else !that(' + args + ')'
 
-def connective_func(lexprs, rexprs, op):
-  length = len(lexprs)
-  return ''.join(['def ', op, '(p: Predicate', str(length), '[', ','.join(lexprs), '], q: Predicate', str(length), '[',
-                  ','.join(rexprs), '])'])
-
-def connective_decl(num):
-   lexprs = ['T' + str(x) for x in range(0,num)]
-   rexprs = ['Q' + str(x) for x in range(0,num)]
-   bounds = [lower_bound(y,x) for (x,y) in zip(lexprs,rexprs)]
-   ltypes = ','.join(lexprs)
-   rtypes = ','.join(rexprs)
-   pairs = [('or', func_or), ('and', func_and), ('xor', func_xor), ('nand', func_nand), ('nxor', func_nxor), ('nor', func_nor)]
-   def inner_func(arg):
-     (name, func) = arg
-     return connective_func(lexprs, rexprs, name) + ' = ' + compound_decl(lexprs, rexprs, func) + '\n'
-
-   return ''.join(['protected[predicate] implicit def conn[', ','.join(bounds), '] = new Connection[Predicate', str(num),
-                  '[', ltypes, '],Predicate', str(num), '[', rtypes, '],Predicate', str(num), '[', ltypes, ']]{\n',
-                  ''.join(map(inner_func, pairs)), '}'])
-
-def negation_decl(num):
-  exprs = ['T' + str(x) for x in range(0,num)]
-  types = ','.join(exprs)
-  return ''.join(['protected[predicate] implicit def not = new Negation[Predicate', str(num), '[', types, ']]{\n',
-                 'def not(pred: Predicate', str(num), '[', types, ']) = new Predicate', str(num), '[', types, ']{\n',
-                 apply_decl(exprs), '= !pred(', ','.join(arguments(exprs)), ')\n}\n}'])
 
 def pred_decl(num):
-  exprs = ['T' + str(x) for x in range(0,num)]
-  return 'trait Predicate' + str(num) + '[' + ', \n'.join(map(lambda x: specialized(covariant(x)), exprs)) + \
-    '] extends Function' + str(num) + '[' + ','.join(exprs) + ',Boolean] with PredicateLike[Predicate' + \
-    str(num) + '[' + ','.join(exprs) + ']]{\n'
+  inner = [('or', func_or), ('and', func_and), ('xor', func_xor), ('nor', func_nor), ('nand', func_nand), ('nxor', func_nxor)]
+  funcs = '\n'.join([named_func(x, f, num) for (x, f) in inner])
+  those = _types(num)
 
-def make_predicate(num):
-  return ''.join([pred_decl(num), connective_decl(num), negation_decl(num), '\n}'])
+  pred_types_str = '[' + ', '.join(those) + ']'
+  func_types_str = those[:]
+  func_types_str.append('Boolean')
+  func_types_str = '[' + ', '.join(func_types_str) + ']'
 
-def cpred_decl(num):
-  lexprs = ['T' + str(x) for x in range(0,num)]
-  rexprs = ['Q' + str(x) for x in range(0,num)]
-  bounds = [lower_bound(y,x) for (x,y) in zip(lexprs,rexprs)]
-  return ''.join(['abstract class CompoundPredicate', str(num), '[', ',\n'.join(map(specialized,lexprs)),
-                  ',\n'.join(map(specialized,bounds)), '](p: Predicate', str(num), '[', ','.join(lexprs),
-                  '], q: Predicate', str(num), '[', ','.join(rexprs), ']) extends Predicate', str(num), '[',
-                  ','.join(lexprs), ']'])
+  return ''.join(['trait Predicate' ,str(num), pred_types_str, ' extends Function', func_types_str, '{\n', \
+                  '\tself =>\n\n', \
+                  funcs, \
+                  '\n\toverride toString() = '<predicate', str(num), '>\n', \
+                  '\n}\n\n'])
+
+def obj_decl(num):
+  those = _types(num)
+  pred_types_str = '[' + ', '.join(those) + ']'
+
+  args = arguments(num)
+  args_str = ', '.join(args)
+  typed_argu = ', '.join(typed_args(args, those))
+
+  return ''.join(['object Predicate', str(num), '{\n', \
+                  '\timplicit def not', pred_types_str, ' = new Negation[Predicate', str(num), pred_types_str, ']{\n' \
+                  '\t\tdef not(pred: Predicate', str(num), pred_types_str, ') = new Predicate', str(num), pred_types_str, '{\n', \
+                  '\t\t\tdef apply(', typed_argu, ') = !pred(', args_str, ')\n',
+                  '\t\t}\n', \
+                  '\t}\n', \
+                  '}\n\n'])
 
 def always_decl(num):
   types = ['Any' for x in range(0,num)]
+  args = arguments(num)
+  typed_argu = ', '.join(typed_args(args, types))
+
   return ''.join(['object Always', str(num), ' extends Predicate', str(num), '[', ','.join(types), ']{\n',
-                  apply_decl(types), ' = true\n}'])
+                  '\tdef apply(', typed_argu, ') = true\n}\n'])
 
 def never_decl(num):
   types = ['Any' for x in range(0,num)]
+  args = arguments(num)
+  typed_argu = ', '.join(typed_args(args, types))
+
   return ''.join(['object Never', str(num), ' extends Predicate', str(num), '[', ','.join(types), ']{\n',
-                  apply_decl(types), ' = false\n}'])
+                  '\tdef apply(', typed_argu, ') = false\n}\n'])
 
 def create_all(num):
-  return '\n\n'.join([make_predicate(num), cpred_decl(num), always_decl(num), never_decl(num)])
+  return '\n\n'.join([pred_decl(num), obj_decl(num), always_decl(num), never_decl(num)])

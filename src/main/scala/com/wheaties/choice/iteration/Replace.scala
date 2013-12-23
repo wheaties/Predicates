@@ -1,37 +1,55 @@
 package com.wheaties.choice.iteration
 
-//TODO: change to implicit object that creates functions
+import scala.collection.TraversableLike
+import scala.collection.generic._
 
-trait Replace[Elem,+Action] extends (Elem => Elem){
-  def apply(elem: Elem): Elem
-}
+trait Replace[Elem,Collection,Sub] extends ((Collection, Sub, Elem => Boolean) => Collection)
 
-class Substitute[Elem](value: Elem) extends Replace[Elem,Elem]{
-  def apply(elem: Elem) = value
-}
+//TODO: Missing mutable...
+trait ReplaceImplicits{
+  implicit def repTraversable[Elem, Repr <: TraversableLike[Elem, Repr]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
+    new Replace[Elem, Repr, Elem] {
+      def apply(coll: Repr, value: Elem, pred: Elem => Boolean): Repr ={
+        def sub(elem: Elem) = if(pred(elem)) value else elem
 
-class SubIterable[Elem,To,I[To] <: Iterable[Elem]](value: I[To]) extends Replace[Elem,I[To]]{
-  private val iter = value.iterator
+        coll.map(sub)(cbf)
+      }
+    }
 
-  def apply(elem: Elem) = if(iter hasNext) iter next () else elem
-}
+  implicit def repTraversable[Elem, Array[_]] = new Replace[Elem, Array[Elem], Elem] {
+    def apply(coll: Array[Elem], value: Elem, pred: Elem => Boolean): Array[Elem] ={
+      def sub(elem: Elem) = if(pred(elem)) value else elem
 
-class SubStream[Elem,To,S[To] <: Stream[Elem]](var value: S[To]) extends Replace[Elem,S[To]]{
-  def apply(elem: Elem) = value match{
-    case head #:: tail => value = tail; head
-    case _ => elem
+      coll map sub
+    }
   }
-}
 
-class SubArray[Elem : ClassManifest, To, A[To] <: Array[Elem]](value: A[To]) extends Replace[Elem,A[To]]{
-  private val iter = value.iterator
+  implicit def repTraversableSub[Elem, Sub <: Elem, Repr <: TraversableLike[Elem, Repr], From <: TraversableLike[Sub, From]](implicit cbf: CanBuildFrom[Repr, Elem, Repr])=
+    new Replace[Elem, Repr, From] {
+      def apply(coll: Repr, value: From, pred: Elem => Boolean): Repr ={
+        val iter = value.toIterator
+        def sub(elem: Elem) = if(pred(elem) && iter.hasNext) iter next () else elem
 
-  def apply(elem: Elem) = if(iter hasNext) iter next () else elem
-}
+        coll.map(sub)(cbf)
+      }
+    }
 
-class SubKeys[Key, To, Value, C[To] <: Iterable[Key]](value: C[To])
-    extends Replace[(Key,Value),C[To]]{
-  private val iter = value.iterator
+  implicit def repTraversableArray[Elem, Sub <: Elem, Repr <: TraversableLike[Elem, Repr], Array[_]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
+    new Replace[Elem, Repr, Array[Sub]] {
+      def apply(coll: Repr, value: Array[Sub], pred: Elem => Boolean): Repr ={
+        val iter = value.toIterator
+        def sub(elem: Elem) = if(pred(elem) && iter.hasNext) iter next () else elem
 
-  def apply(elem: (Key,Value)) = if(iter hasNext) (iter next (), elem._2) else elem
+        coll.map(sub)(cbf)
+      }
+    }
+
+  implicit def repArraySub[Elem, Sub <: Elem, Array[_]] = new Replace[Elem, Array[Elem], Array[Sub]] {
+    def apply(coll: Array[Elem], value: Array[Sub], pred: Elem => Boolean): Array[Elem] ={
+      val iter = value.toIterator
+      def sub(elem: Elem) = if(pred(elem) && iter.hasNext) iter next () else elem
+
+      coll map sub
+    }
+  }
 }

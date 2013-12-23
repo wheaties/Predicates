@@ -1,4 +1,4 @@
-package com.wheaties.predicate
+package com.wheaties
 
 package object predicate{
   implicit class SugarIs[A](value: A){

@@ -6,8 +6,7 @@ import com.wheaties.predicate.Predicate1
 trait Choice[-Value]{
   self =>
 
-  protected[choice] def scheme: Predicate1[Value]
-  protected[choice] def filter: Predicate1[Value]
+  protected[choice] def filter[V <: Value]: Predicate1[V]
 
   def get[C](collection: C)(implicit view: View[Value,C]) = view(collection, filter)
 
@@ -18,8 +17,7 @@ trait Choice[-Value]{
   def compose[V <: Value](that: Choice[V]) = that andThen this
 
   def andThen[V <: Value](that: Choice[V]) = new Choice[V]{
-    protected[choice] def scheme = (self filter) and  (that filter)
-    protected[choice] def filter = scheme
+    protected[choice] def filter[V <: Value] = (self.filter) and  (that.filter)
   }
 }
 

@@ -1,6 +1,7 @@
 package com.wheaties.choice.iteration
 
-import scala.collection.TraversableLike
+import collection.TraversableLike
+import collection.mutable.ArrayLike
 
 trait View[Elem,Collection] extends ((Collection, Elem => Boolean) => Collection)
 
@@ -9,9 +10,7 @@ trait ViewImplicits{
     def apply(coll: Repr, pred: Elem => Boolean): Repr = coll filter pred
   }
 
-  implicit def viewArray[Elem, Array[_]] = new View[Elem, Array[Elem]] {
-    def apply(array: Array[Elem], pred: Elem => Boolean): Array[Elem] = array filter pred
+  implicit def viewArrayLike[Elem, Repr <: ArrayLike[Elem, Repr]] = new View[Elem, Repr] {
+    def apply(array: Repr, pred: Elem => Boolean) = array filter pred
   }
-
-  //implicit def viewArray[Elem, Repr <: ArrayLike[Elem, Repr]]
 }

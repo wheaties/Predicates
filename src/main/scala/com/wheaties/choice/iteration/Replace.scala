@@ -2,6 +2,7 @@ package com.wheaties.choice.iteration
 
 import scala.collection.TraversableLike
 import scala.collection.generic._
+import collection.mutable.ArrayLike
 
 trait Replace[Elem,Collection,Sub] extends ((Collection, Sub, Elem => Boolean) => Collection)
 
@@ -16,13 +17,14 @@ trait ReplaceImplicits{
       }
     }
 
-  implicit def repTraversable[Elem, Array[_]] = new Replace[Elem, Array[Elem], Elem] {
-    def apply(coll: Array[Elem], value: Elem, pred: Elem => Boolean): Array[Elem] ={
-      def sub(elem: Elem) = if(pred(elem)) value else elem
+  implicit def repArray[Elem, Repr <: ArrayLike[Elem, Repr]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
+    new Replace[Elem, Repr, Elem] {
+      def apply(coll: Repr, value: Elem, pred: Elem => Boolean): Repr ={
+        def sub(elem: Elem) = if(pred(elem)) value else elem
 
-      coll map sub
+        coll.map(sub)(cbf)
+      }
     }
-  }
 
   implicit def repTraversableSub[Elem, Sub <: Elem, Repr <: TraversableLike[Elem, Repr], From <: TraversableLike[Sub, From]](implicit cbf: CanBuildFrom[Repr, Elem, Repr])=
     new Replace[Elem, Repr, From] {
@@ -34,9 +36,9 @@ trait ReplaceImplicits{
       }
     }
 
-  implicit def repTraversableArray[Elem, Sub <: Elem, Repr <: TraversableLike[Elem, Repr], Array[_]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
-    new Replace[Elem, Repr, Array[Sub]] {
-      def apply(coll: Repr, value: Array[Sub], pred: Elem => Boolean): Repr ={
+  implicit def repTraversableArray[Elem, Sub <: Elem, Repr <: TraversableLike[Elem, Repr], ARepr <: ArrayLike[Sub, ARepr]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
+    new Replace[Elem, Repr, ARepr] {
+      def apply(coll: Repr, value: ARepr, pred: Elem => Boolean): Repr ={
         val iter = value.toIterator
         def sub(elem: Elem) = if(pred(elem) && iter.hasNext) iter next () else elem
 
@@ -44,12 +46,13 @@ trait ReplaceImplicits{
       }
     }
 
-  implicit def repArraySub[Elem, Sub <: Elem, Array[_]] = new Replace[Elem, Array[Elem], Array[Sub]] {
-    def apply(coll: Array[Elem], value: Array[Sub], pred: Elem => Boolean): Array[Elem] ={
-      val iter = value.toIterator
-      def sub(elem: Elem) = if(pred(elem) && iter.hasNext) iter next () else elem
+  implicit def repArraySub[Elem, Sub <: Elem, Repr <: ArrayLike[Elem, Repr], ReprSub <: ArrayLike[Sub, ReprSub]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
+    new Replace[Elem, Repr, ReprSub] {
+      def apply(coll: Repr, value: ReprSub, pred: Elem => Boolean): Repr ={
+        val iter = value.toIterator
+        def sub(elem: Elem) = if(pred(elem) && iter.hasNext) iter next () else elem
 
-      coll map sub
-    }
+        coll.map(sub)(cbf)
+      }
   }
 }

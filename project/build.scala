@@ -9,7 +9,7 @@ object Predicates extends Build{
       organization := "wheaties",
       version := "0.1",
       scalaVersion := "2.10.3",
-      scalacOptions := Seq("-deprecation", "-unchecked", "-feature", "-language:postfixOps"),
+      scalacOptions := Seq("-deprecation", "-unchecked", "-feature", "-language:higherKinds"),
       resolvers ++= Seq(
         "Scala-Tools Maven2 Snapshots Repository" at "http://scala-tools.org/repo-snapshots",
         "Sonatype OSS snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",

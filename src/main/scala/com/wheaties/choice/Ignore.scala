@@ -36,10 +36,6 @@ object Ignore{
     }
   }
 
-  def apply[V](pred: Predicate1[V]) = new Ignore[V]{
-    protected[choice] def scheme[VV <: V] = pred
-  }
-
   implicit def neg[V] = new Negation[Ignore[V]] {
     def not(that: Ignore[V]) = new Ignore[V] {
       protected[choice] def scheme[VV <: V] = Not(that.scheme)

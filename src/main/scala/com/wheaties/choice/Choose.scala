@@ -35,10 +35,6 @@ object Choose{
     }
   }
 
-  def apply[V](pred: Predicate1[V]) = new Choose[V]{
-    protected[choice] def filter[VV <: V] = pred
-  }
-
   implicit def neg[V] = new Negation[Choose[V]] {
     def not(that: Choose[V]) = new Choose[V] {
       protected[choice] def filter[VV <: V] = Not(that.filter)

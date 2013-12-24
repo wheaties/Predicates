@@ -1,10 +1,10 @@
 package com.wheaties.choice.iteration
 
 import scala.collection.TraversableLike
-import scala.collection.generic._
+import collection.generic.CanBuildFrom
 import collection.mutable.ArrayLike
 
-trait Replace[Elem,Collection,Sub] extends ((Collection, Sub, Elem => Boolean) => Collection)
+trait Replace[+Elem,Collection,+Sub] extends ((Collection, Sub, Elem => Boolean) => Collection)
 
 //TODO: Missing mutable...
 trait ReplaceImplicits{
@@ -16,6 +16,17 @@ trait ReplaceImplicits{
         coll.map(sub)(cbf)
       }
     }
+
+//  abstract class TravReplace[Elem, Repr <: TraversableLike[Elem, Repr], Sub](implicit cbf: CanBuildFrom[Repr, Elem, Repr])
+//      extends Replace[Elem, Repr, Sub]{
+//    def apply(coll: Repr, value: Elem, pred: Elem => Boolean): Repr ={
+//      def sub(elem: Elem) = if(pred(elem)) value else elem
+//
+//      coll.map(sub)(cbf)
+//    }
+//  }
+
+//  implicit def repList[Elem, List[Elem]] = new TravReplace[Elem, List[Elem], Elem]{}
 
   implicit def repArray[Elem, Repr <: ArrayLike[Elem, Repr]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
     new Replace[Elem, Repr, Elem] {

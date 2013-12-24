@@ -11,7 +11,7 @@ object Predicates extends Build{
     id = "predicates",
     base = file("predicates"),
     settings = baseSettings ++ Seq(
-      libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1"
+      libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test"
     )
   )
 
@@ -19,7 +19,7 @@ object Predicates extends Build{
     id = "choices",
     base = file("choices"),
     settings = baseSettings ++ Seq(
-      libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1"
+      libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test"
     )
   ) dependsOn predicates
 

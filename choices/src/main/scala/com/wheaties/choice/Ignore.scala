@@ -29,7 +29,7 @@ trait Ignore[-V] extends Choice[V]{
   protected[choice] def filter[VV <: V] = Not(scheme)
 }
 
-object Ignore{
+object Ignore {
   def apply[V](f: V => Boolean) = new Ignore[V]{
     protected[choice] def scheme[VV <: V] = new Predicate1[VV] {
       def apply(arg1: VV) = f(arg1)

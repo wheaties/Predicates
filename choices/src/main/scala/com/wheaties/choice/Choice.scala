@@ -12,8 +12,6 @@ trait Choice[-Value]{
 
   def set[C, A](collection: C, value: A)(implicit replace: Replace[Value, C, A]) = replace(collection, value, filter)
 
-  //def set[C, V <: Value](collection: C, value: V)(implicit modify: Modify[V, C]) = modify(collection, _ => value, filter)
-
   def mod[C, V <: Value](collection: C, f: V => V)(implicit modify: Modify[V, C]) = modify(collection, f, filter)
 
   def compose[V <: Value](that: Choice[V]) = that andThen this

@@ -16,7 +16,15 @@ trait ModifyImplicits{
       }
     }
 
-  implicit def modArray[Elem, Repr <: ArrayLike[Elem, Repr]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
+  implicit def modArray[Elem](implicit cbf: CanBuildFrom[Array[Elem], Elem, Array[Elem]]) = new Modify[Elem, Array[Elem]] {
+    def apply(coll: Array[Elem], f: Elem => Elem, pred: Elem => Boolean): Array[Elem] ={
+      def sub(elem: Elem) = if(pred(elem)) f(elem) else elem
+
+      coll.map(sub)(cbf)
+    }
+  }
+
+  implicit def modArrayLike[Elem, Repr <: ArrayLike[Elem, Repr]](implicit cbf: CanBuildFrom[Repr, Elem, Repr]) =
     new Modify[Elem, Repr] {
       def apply(coll: Repr, f: Elem => Elem, pred: Elem => Boolean): Repr ={
         def sub(elem: Elem) = if(pred(elem)) f(elem) else elem

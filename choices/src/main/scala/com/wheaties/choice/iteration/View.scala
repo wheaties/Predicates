@@ -11,10 +11,6 @@ class TView[+Elem, Repr <: TraversableLike[Elem, Repr]] extends View[Elem, Repr]
   def apply(coll: Repr, pred: Elem => Boolean): Repr = coll filter pred
 }
 
-class AView[Elem, Repr <: ArrayLike[Elem, Repr]] extends View[Elem, Repr] {
-  def apply(array: Repr, pred: Elem => Boolean): Repr = array filter pred
-}
-
 trait ViewImplicits{
   implicit def abuffer[E] = new TView[E, ArrayBuffer[E]]
   implicit def hashset[E] = new TView[E, HashSet[E]]
@@ -44,6 +40,4 @@ trait ViewImplicits{
   implicit def array[E] = new View[E, Array[E]]{
     def apply(a: Array[E], pred: E => Boolean) = a filter pred
   }
-
-  implicit def wrapped[E] = new AView[E, WrappedArray[E]]
 }

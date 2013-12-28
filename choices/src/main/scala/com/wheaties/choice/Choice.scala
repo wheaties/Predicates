@@ -10,7 +10,9 @@ trait Choice[-Value]{
 
   def get[C](collection: C)(implicit view: View[Value, C]) = view(collection, filter)
 
-  def set[A, C](collection: C, value: A)(implicit replace: Replace[Value, C, A]) = replace(collection, value, filter)
+  def set[C, A](collection: C, value: A)(implicit replace: Replace[Value, C, A]) = replace(collection, value, filter)
+
+  //def set[C, V <: Value](collection: C, value: V)(implicit modify: Modify[V, C]) = modify(collection, _ => value, filter)
 
   def mod[C, V <: Value](collection: C, f: V => V)(implicit modify: Modify[V, C]) = modify(collection, f, filter)
 

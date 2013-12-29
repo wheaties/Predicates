@@ -14,14 +14,6 @@ class ChooseSpec extends WordSpec with Matchers{
       out should contain(2)
       out should have length(1)
     }
-    "set" should{
-      val out = choose set (List(1, 2, 3), 4)
-
-      out should contain(1)
-      out should contain(4)
-      out should contain(3)
-      out should have length(3)
-    }
     "put back what you take out changes nothing" in{
       val out = choose set (List(1, 2, 3), choose get List(1, 2, 3))
 
@@ -60,8 +52,11 @@ class ChooseSpec extends WordSpec with Matchers{
       out should contain(4)
       out should contain(5)
       out should contain(6)
+      out should not contain(1)
+      out should not contain(2)
+      out should not contain(3)
     }
-    "work" in {
+    "work with two different collection types" in {
       val out = choose set (Set(1, 2, 3), List(4, 5, 6))
 
       out should contain(4)
@@ -72,6 +67,9 @@ class ChooseSpec extends WordSpec with Matchers{
       val out = choose set (List(1, 2, 3), 4)
 
       out should contain(4)
+      out should not contain(1)
+      out should not contain(2)
+      out should not contain(3)
       out should have length(3)
     }
   }

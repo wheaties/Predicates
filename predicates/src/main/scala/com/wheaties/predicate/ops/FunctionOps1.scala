@@ -2,13 +2,8 @@ package com.wheaties.ops
 
 import com.wheaties.predicate.Predicate1
 import com.wheaties.logical.{Negation, Disjunction, Conjunction}
-import com.wheaties.predicate.defined.DefinedAt
 
 object FunctionOps1{
-  implicit class F2DefinedAt[T1, R](f: T1 => R){
-    def definedAt[TT <: T1](pred: TT => Boolean) = new DefinedAt(f, pred)
-  }
-
   implicit class F2P1[T1](f: T1 => Boolean) extends Predicate1[T1]{
     def apply(arg1: T1) = f(arg1)
   }

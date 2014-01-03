@@ -19,3 +19,9 @@ class DefinedAt[@specialized(Int,Long,Float,Double) -T1, +R](f: T1 => R, p: T1 =
   def nandAt[TT <: T1](q: TT => Boolean) = new DefinedAt[TT, R](f, p nand q)
   def nxorAt[TT <: T1](q: TT => Boolean) = new DefinedAt[TT, R](f, p nxor q)
 }
+
+object DefinedAt{
+  implicit class F2DefinedAt[T1, R](f: T1 => R){
+    def definedAt[TT <: T1](pred: TT => Boolean) = new DefinedAt(f, pred)
+  }
+}

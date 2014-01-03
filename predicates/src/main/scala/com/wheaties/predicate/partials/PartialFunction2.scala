@@ -1,6 +1,7 @@
 package com.wheaties.partials
 
-trait PartialFunction2[-T1, -T2, +R] extends ((T1, T2) => R){
+trait PartialFunction2[@specialized(Int,Long,Float,Double) -T1,
+                       @specialized(Int,Long,Float,Double) -T2, +R] extends ((T1, T2) => R){
   import PartialFunction2._
 
   def isDefinedAt(arg1: T1, arg2: T2): Boolean
@@ -15,15 +16,17 @@ trait PartialFunction2[-T1, -T2, +R] extends ((T1, T2) => R){
 }
 
 object PartialFunction2{
-  private class orElse2[-T1, -T2, +R](p: PartialFunction2[T1, T2, R], q: PartialFunction2[T1, T2, R])
-    extends PartialFunction2[T1, T2, R]{
+  private class orElse2[@specialized(Int,Long,Float,Double) -T1,
+                        @specialized(Int,Long,Float,Double) -T2, +R](p: PartialFunction2[T1, T2, R], q: PartialFunction2[T1, T2, R])
+      extends PartialFunction2[T1, T2, R]{
 
     def isDefinedAt(arg1: T1, arg2: T2) = p.isDefinedAt(arg1, arg2) || q.isDefinedAt(arg1, arg2)
 
     def apply(arg1: T1, arg2: T2) = p applyOrElse (arg1, arg2, q)
   }
 
-  private class Lifted2[-T1, -T2, +R](pf: PartialFunction2[T1, T2, R]) extends ((T1, T2) => Option[R]){
+  private class Lifted2[@specialized(Int,Long,Float,Double) -T1, @specialized(Int,Long,Float,Double) -T2, +R](pf: PartialFunction2[T1, T2, R])
+      extends ((T1, T2) => Option[R]){
     def apply(arg1: T1, arg2: T2): Option[R] = Option{
       pf applyOrElse (arg1, arg2, defaultFn.asInstanceOf[(T1, T2) => R])
     }

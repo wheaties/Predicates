@@ -1,6 +1,6 @@
 package com.wheaties.predicate.defined
 
-import com.wheaties.ops.FunctionOps1
+import com.wheaties.predicate.ops.FunctionOps1
 
 class DefinedAt[@specialized(Int,Long,Float,Double) -T1, +R](f: T1 => R, p: T1 => Boolean)
     extends PartialFunction[T1, R]{

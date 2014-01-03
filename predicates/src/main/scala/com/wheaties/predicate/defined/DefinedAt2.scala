@@ -1,7 +1,7 @@
 package com.wheaties.predicate.defined
 
 import com.wheaties.partials.PartialFunction2
-import com.wheaties.ops.FunctionOps2
+import com.wheaties.predicate.ops.FunctionOps2
 
 class DefinedAt2[@specialized(Int,Long,Float,Double) -T1,
                  @specialized(Int,Long,Float,Double) -T2, R](f: (T1, T2) => R, p: (T1, T2) => Boolean)

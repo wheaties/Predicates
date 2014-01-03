@@ -1,4 +1,4 @@
-package com.wheaties.ops
+package com.wheaties.predicate.ops
 
 import com.wheaties.predicate.Predicate1
 import com.wheaties.logical.{Negation, Disjunction, Conjunction}

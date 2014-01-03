@@ -3,10 +3,12 @@ package com.wheaties.predicate.defined
 import com.wheaties.partials.PartialFunction2
 import com.wheaties.ops.FunctionOps2
 
-class DefinedAt2[-T1, -T2, R](f: (T1, T2) => R, p: (T1, T2) => Boolean) extends PartialFunction2[T1, T2, R]{
+class DefinedAt2[@specialized(Int,Long,Float,Double) -T1,
+                 @specialized(Int,Long,Float,Double) -T2, R](f: (T1, T2) => R, p: (T1, T2) => Boolean)
+    extends PartialFunction2[T1, T2, R]{
   import FunctionOps2._
 
-  def apply(arg1: T1, arg2: T2) = if(p(arg1, arg2)) f(arg1, arg2) else throw new IllegalArgumentException((arg1, arg2) toString ())
+  def apply(arg1: T1, arg2: T2) = if(p(arg1, arg2)) f(arg1, arg2) else throw new NotDefinedForException(arg1, arg2)
 
   override def applyOrElse[TT1 <: T1, TT2 <: T2, RR >: R](arg1: TT1, arg2: TT2, default: (TT1, TT2) => RR): RR =
     if(p(arg1, arg2)) f(arg1, arg2) else default(arg1, arg2)

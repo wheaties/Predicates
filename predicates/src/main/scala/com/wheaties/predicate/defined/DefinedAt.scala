@@ -2,10 +2,11 @@ package com.wheaties.predicate.defined
 
 import com.wheaties.ops.FunctionOps1
 
-class DefinedAt[-T1, +R](f: T1 => R, p: T1 => Boolean) extends PartialFunction[T1, R]{
+class DefinedAt[@specialized(Int,Long,Float,Double) -T1, +R](f: T1 => R, p: T1 => Boolean)
+    extends PartialFunction[T1, R]{
   import FunctionOps1._
 
-  def apply(v1: T1): R = if(isDefinedAt(v1)) f(v1) else throw new IllegalArgumentException(v1 toString ())
+  def apply(v1: T1): R = if(isDefinedAt(v1)) f(v1) else throw new NotDefinedForException(v1)
 
   override def applyOrElse[TT <: T1, RR >: R](x: TT, default: TT => RR): RR = if(p(x)) f(x) else default(x)
 

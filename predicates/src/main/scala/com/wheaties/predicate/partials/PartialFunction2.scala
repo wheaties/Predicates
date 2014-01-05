@@ -2,7 +2,15 @@ package com.wheaties.partials
 
 trait PartialFunction2[@specialized(Int,Long,Float,Double) -T1,
                        @specialized(Int,Long,Float,Double) -T2, +R] extends ((T1, T2) => R){
+  self =>
+
   import PartialFunction2._
+
+  override def tupled = new PartialFunction[(T1, T2), R] {
+    def isDefinedAt(v1: (T1, T2)) = self isDefinedAt (v1._1, v1._2)
+
+    def apply(v1: (T1, T2)) = self(v1._1, v1._2)
+  }
 
   def isDefinedAt(arg1: T1, arg2: T2): Boolean
 

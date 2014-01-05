@@ -1,7 +1,15 @@
 package com.wheaties.predicate.partials
 
 trait PartialFunction3[-T1, -T2, -T3, +R] extends ((T1, T2, T3) => R){
+  self =>
+
   import PartialFunction3._
+
+  override def tupled = new PartialFunction[(T1, T2, T3), R] {
+    def isDefinedAt(v1: (T1, T2, T3)) = self isDefinedAt (v1._1, v1._2, v1._3)
+
+    def apply(v1: (T1, T2, T3)) = self(v1._1, v1._2, v1._3)
+  }
 
   def isDefinedAt(arg1: T1, arg2: T2, arg3: T3): Boolean
 

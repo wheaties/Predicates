@@ -14,6 +14,12 @@ trait Choice[-Value]{
 
   def mod[C, V <: Value](collection: C, f: V => V)(implicit modify: Modify[V, C]) = modify(collection, f, filter)
 
+  def foldL[C, V <: Value, Out](init: Out, collection: C)(f: (Out, V) => Out)(implicit folder: FoldL[Out, V, C]) =
+    folder(init, collection, f, filter)
+
+  def foldR[C, V <: Value, Out](init: Out, collection: C)(f: (V, Out) => Out)(implicit folder: FoldR[Out, V, C]) =
+    folder(init, collection, f, filter)
+
   def compose[V <: Value](that: Choice[V]) = that andThen this
 
   def andThen[V <: Value](that: Choice[V]) = new Choice[V]{

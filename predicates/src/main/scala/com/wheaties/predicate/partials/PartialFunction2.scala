@@ -1,5 +1,6 @@
 package com.wheaties.partials
 
+//TODO: Need AndThen just like PartialFunction has them
 trait PartialFunction2[@specialized(Int,Long,Float,Double) -T1,
                        @specialized(Int,Long,Float,Double) -T2, +R] extends ((T1, T2) => R){
   self =>

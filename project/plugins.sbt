@@ -6,4 +6,6 @@ resolvers ++= Seq(
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
 
-addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "0.5.0")
+
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")

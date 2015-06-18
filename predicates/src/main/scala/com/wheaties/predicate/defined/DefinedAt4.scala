@@ -1,11 +1,10 @@
 package com.wheaties.predicate.defined
 
-import com.wheaties.predicate.ops.FunctionOps4
 import com.wheaties.predicate.partials.PartialFunction4
 
 class DefinedAt4[-T1, -T2, -T3, -T4, R](f: (T1, T2, T3, T4) => R, p: (T1, T2, T3, T4) => Boolean)
 			extends PartialFunction4[T1, T2, T3, T4, R]{
-	import FunctionOps4._
+	import com.wheaties.predicate._
 	def apply(arg1: T1, arg2: T2, arg3: T3, arg4: T4) = if(isDefinedAt(arg1, arg2, arg3, arg4)) f(arg1, arg2, arg3, arg4) else throw new NotDefinedForException(arg1, arg2, arg3, arg4)
 
 	override def applyOrElse[TT1 <: T1, TT2 <: T2, TT3 <: T3, TT4 <: T4, RR >: R](arg1: TT1, arg2: TT2, arg3: TT3, arg4: TT4, default: (TT1, TT2, TT3, TT4) => RR): RR = if(p(arg1, arg2, arg3, arg4)) f(arg1, arg2, arg3, arg4) else default(arg1, arg2, arg3, arg4)

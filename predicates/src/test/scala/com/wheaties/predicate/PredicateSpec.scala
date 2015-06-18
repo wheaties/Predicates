@@ -1,12 +1,11 @@
 package com.wheaties.predicate
 
 import org.scalatest.{ShouldMatchers, Matchers, WordSpecLike}
+import com.wheaties.predicate._
 
 class PredicateSpec extends WordSpecLike
   with Matchers
   with ShouldMatchers {
-
-  import com.wheaties.predicate.ops.FunctionOps1._
 
   "Predicate" should {
     "have proper `and` method" in new SpecExamples {
@@ -63,30 +62,30 @@ class PredicateSpec extends WordSpecLike
       filtered should equal(List(2, 3, 4, 6))
     }
   }
+
+  trait SpecExamples {
+    trait AppliedAware {
+      var _applied = false
+      def applied: Boolean = _applied
+    }
+
+    case class LessThen(x: Int) extends Function[Int,Boolean] with AppliedAware {
+      def apply(arg: Int) = {
+        _applied = true
+        arg < x
+      }
+    }
+
+    case class Modulo(group: Int, x: Int) extends Function[Int,Boolean] with AppliedAware {
+      def apply(arg: Int) = {
+        _applied = true
+        (arg % group) == x
+      }
+    }
+
+    val sampleList = (2 to 6).toList
+    val modulo_2 = Modulo(2, 0)
+    val modulo_3 = Modulo(3, 0)
+  }
   
-}
-
-trait SpecExamples {
-  trait AppliedAware {
-    var _applied = false
-    def applied: Boolean = _applied
-  }
-
-  case class LessThen(x: Int) extends Function[Int,Boolean] with AppliedAware {
-    def apply(arg: Int) = {
-      _applied = true
-      arg < x
-    }
-  }
-
-  case class Modulo(group: Int, x: Int) extends Function[Int,Boolean] with AppliedAware {
-    def apply(arg: Int) = {
-      _applied = true
-      (arg % group) == x
-    }
-  }
-
-  val sampleList = (2 to 6).toList
-  val modulo_2 = Modulo(2, 0)
-  val modulo_3 = Modulo(3, 0)
 }

@@ -3,7 +3,7 @@ package com.wheaties.predicate.ops
 import com.wheaties.predicate.Predicate3
 import com.wheaties.logical.{Negation, Disjunction, Conjunction}
 
-object FunctionOps3{
+trait FunctionOps3{
 	implicit class F2P3[T1, T2, T3](f: (T1, T2, T3) => Boolean) extends Predicate3[T1, T2, T3]{
 		def apply(arg1: T1, arg2: T2, arg3: T3) = f(arg1, arg2, arg3)
 	}

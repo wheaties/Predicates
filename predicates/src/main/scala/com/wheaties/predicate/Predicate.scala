@@ -2,29 +2,29 @@ package com.wheaties
 
 import com.wheaties.predicate.ops._
 
-package object predicate {
-  import FunctionOps1._
-  import FunctionOps2._
-  import FunctionOps3._
-  import FunctionOps4._
-  import FunctionOps5._
-  import FunctionOps6._
-  import FunctionOps7._
-  import FunctionOps8._
-  import FunctionOps9._
-  import FunctionOps10._
-  import FunctionOps11._
-  import FunctionOps12._
-  import FunctionOps13._
-  import FunctionOps14._
-  import FunctionOps15._
-  import FunctionOps16._
-  import FunctionOps17._
-  import FunctionOps18._
-  import FunctionOps19._
-  import FunctionOps20._
-  import FunctionOps21._
-  import FunctionOps22._
+package object predicate
+  extends FunctionOps1
+  with FunctionOps2
+  with FunctionOps3
+  with FunctionOps4
+  with FunctionOps5
+  with FunctionOps6
+  with FunctionOps7
+  with FunctionOps8
+  with FunctionOps9
+  with FunctionOps10
+  with FunctionOps11
+  with FunctionOps12
+  with FunctionOps13
+  with FunctionOps14
+  with FunctionOps15
+  with FunctionOps16
+  with FunctionOps17
+  with FunctionOps18
+  with FunctionOps19
+  with FunctionOps20
+  with FunctionOps21
+  with FunctionOps22 {
 
   implicit class SugarIs[A](value: A){
     def is(pred: A => Boolean) = pred(value)

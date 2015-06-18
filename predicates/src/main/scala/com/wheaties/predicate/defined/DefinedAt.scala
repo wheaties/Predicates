@@ -1,10 +1,8 @@
 package com.wheaties.predicate.defined
 
-import com.wheaties.predicate.ops.FunctionOps1
-
 class DefinedAt[@specialized(Int,Long,Float,Double) -T1, +R](f: T1 => R, p: T1 => Boolean)
     extends PartialFunction[T1, R]{
-  import FunctionOps1._
+  import com.wheaties.predicate._
 
   def apply(v1: T1): R = if(isDefinedAt(v1)) f(v1) else throw new NotDefinedForException(v1)
 

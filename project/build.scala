@@ -3,13 +3,18 @@ import sbt.Keys._
 import xerial.sbt.Sonatype._
 
 object Predicates extends Build{
+  val macros = project.in(file("macros")).settings(
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.7",
+    scalaVersion := "2.11.7"
+  )
+
   val predicates = Project(
     id = "predicates",
     base = file("predicates"),
     settings = Project.defaultSettings ++ baseSettings ++ Seq(
       libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
     )
-  )
+  ).dependsOn(macros)
 
   val baseSettings = Seq(
     version := "0.1",

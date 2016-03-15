@@ -3,22 +3,43 @@ import sbt.Keys._
 import xerial.sbt.Sonatype._
 
 object Predicates extends Build{
-  val predicates = Project(
-    id = "predicates",
-    base = file("predicates"),
-    settings = Project.defaultSettings ++ baseSettings ++ Seq(
-      libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+
+  lazy val macros: Project = Project(
+    "macros",
+    file("macros"),
+    settings = commonSettings ++ Seq(
+      libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.8"
     )
   )
 
+  lazy val predicates = Project(
+    id = "predicates",
+    base = file("predicates"),
+    settings = baseSettings ++ Seq(
+      libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+      resolvers += Resolver.sonatypeRepo("snapshots"),
+      resolvers += Resolver.sonatypeRepo("releases"),
+      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    )
+  ).dependsOn(macros)
+
+  val commonSettings = {
+    val paradiseVersion = "2.1.0"
+    Seq(
+      scalaVersion := "2.11.8",
+      resolvers += Resolver.sonatypeRepo("snapshots"),
+      resolvers += Resolver.sonatypeRepo("releases"),
+      addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.full)
+    )
+  }
+
   val baseSettings = Seq(
     version := "0.1",
-    scalaVersion := "2.11.6",
     organization := "com.github.wheaties",
     scalacOptions := Seq("-deprecation",
       "-encoding", "UTF-8",
       "-feature",
-      "-language:higherKinds", 
+      "-language:higherKinds",
       "-language:existentials",
       "-unchecked",
       "-Xfatal-warnings",
@@ -36,7 +57,7 @@ object Predicates extends Build{
     pomIncludeRepository := { x => false },
     publishMavenStyle := true,
     publishArtifact in Test := false
-  )
+  ) ++ commonSettings
 
   val predicatesPom =
     <url>http://github.com/wheaties/Predicates</url>

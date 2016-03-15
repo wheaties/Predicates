@@ -61,6 +61,24 @@ class PredicateSpec extends WordSpecLike
       val filtered = sampleList.filter(Modulo(2, 0) or (Modulo(3, 0) and LessThen(6)))
       filtered should equal(List(2, 3, 4, 6))
     }
+
+    "have implicit `not` method" in new SpecExamples {
+//      val filtered = sampleList.filter(Predicate1.not.not(Modulo(2, 0)))
+      val filtered = sampleList.filter(Modulo(2, 0).not)
+      filtered should equal(List(3, 5))
+    }
+
+    "have accompanying Always" in new SpecExamples {
+//      val filtered = sampleList.filter(Modulo(2, 0) or Always1)
+      val filtered = sampleList.filter(Modulo(2, 0) or Predicate1.always)
+      filtered should equal(sampleList)
+    }
+
+    "have accompanying Never" in new SpecExamples {
+//      val filtered = sampleList.filter(Modulo(2, 0) and Never1)
+      val filtered = sampleList.filter(Modulo(2, 0) and Predicate1.never)
+      filtered should equal(List.empty)
+    }
   }
 
   trait SpecExamples {
